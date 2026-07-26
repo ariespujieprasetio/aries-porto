@@ -27,15 +27,58 @@ const workflow = [
   ["Decide", "Use the organized evidence to support—not replace—human judgment."],
 ];
 
-const capabilities = [
-  "Job creation",
-  "Candidate management",
-  "Resume processing",
-  "AI-assisted analysis",
-  "Candidate ranking",
-  "Candidate comparison",
-  "Recruitment dashboards",
-  "Structured evaluation",
+const technicalFoundation = [
+  ["Data & authentication", "Supabase PostgreSQL · Supabase Auth · Google OAuth"],
+  ["AI", "OpenAI · Structured Outputs / JSON Schema where supported · Runtime validation"],
+  ["Document processing", "PDF.js / pdfjs-dist · Mammoth for DOCX extraction"],
+  ["Runtime", "Vercel"],
+  ["Export", "ExcelJS · PDF generation tooling"],
+];
+
+const engineeringDecisions = [
+  {
+    title: "Human state is separate from AI recommendation",
+    context:
+      "An AI assessment and a recruiter’s operational decision answer different questions.",
+    approach:
+      "Veritik keeps AI Recommendation separate from Recruitment Status. AI evaluation does not move candidates through the pipeline, and status changes do not alter scores or recommendations.",
+    impact:
+      "The boundary keeps human accountability explicit and prevents automation from silently becoming a hiring decision.",
+  },
+  {
+    title: "Treat AI output as untrusted input",
+    context:
+      "Model responses can be malformed, incomplete, or inconsistent with the product’s score contract.",
+    approach:
+      "Assessment uses structured output where supported, followed by runtime validation. Required scores must be numeric values from 0–100; invalid responses are rejected before persistence.",
+    impact:
+      "Ranking and comparison depend on trustworthy domain data, including legitimate edge values such as 0 and 100.",
+  },
+  {
+    title: "Fail explicitly during document processing",
+    context:
+      "A file can appear valid while containing no readable resume text, or one file can fail inside a larger batch.",
+    approach:
+      "Veritik validates format and extracted content, reports each file independently, and does not send image-only PDFs without a text layer into scoring.",
+    impact:
+      "Recruiters can distinguish a failed extraction from a low assessment, while successful files in the same batch remain usable.",
+  },
+  {
+    title: "Enforce workspace-level data isolation",
+    context:
+      "Jobs, candidate profiles, notes, and evaluations contain sensitive recruitment data.",
+    approach:
+      "Jobs and candidates belong to a workspace. Protected operations validate the session, workspace membership, and resource ownership on the server.",
+    impact:
+      "Authorization follows the data boundary and prevents one workspace from reading or changing another workspace’s resources.",
+  },
+];
+
+const reliabilityPoints = [
+  ["Independent file processing", "One failed CV does not hide successful results from other files in the batch."],
+  ["Typed document failures", "Invalid, encrypted, unreadable, timed-out, and OCR-required PDFs remain distinguishable."],
+  ["Validated AI output", "Malformed assessment data is rejected before it can become a valid persisted result."],
+  ["Privacy-conscious observability", "Production telemetry must exclude CV contents and candidate personal data."],
 ];
 
 const productViews = [
@@ -122,6 +165,8 @@ export default function VeritikPage() {
           <a href="#workflow">Workflow</a>
           <a href="#product">Product views</a>
           <a href="#engineering">Engineering</a>
+          <a href="#decisions">Decisions</a>
+          <a href="#reliability">Reliability</a>
           <a href="#principle">AI principle</a>
         </aside>
 
@@ -199,40 +244,71 @@ export default function VeritikPage() {
 
           <section id="engineering">
             <p className="eyebrow">05 / Engineering the product</p>
-            <h2>Full-stack work shaped by the product workflow.</h2>
+            <h2>A technical foundation chosen around the workflow.</h2>
             <p>
-              Veritik is approached as a product system rather than a collection of isolated
-              screens. The engineering work spans the user-facing workflow and the application
-              behavior required to connect jobs, candidates, resumes, analysis, ranking, and comparison.
+              The product connects tenant-scoped recruitment data, authentication, document
+              extraction, validated AI output, and export within one application workflow.
+              The foundation below reflects the current PRD without implying undocumented
+              infrastructure.
             </p>
-            <div className="engineering-themes">
-              <article>
-                <span>Product structure</span>
-                <p>Keep related recruitment tasks connected so context is not lost between features.</p>
-              </article>
-              <article>
-                <span>Information design</span>
-                <p>Present dense candidate information in forms that remain reviewable and comparable.</p>
-              </article>
-              <article>
-                <span>AI integration</span>
-                <p>Place assisted analysis inside the workflow while keeping its role and limits clear.</p>
-              </article>
+            <dl className="technical-foundation">
+              {technicalFoundation.map(([term, detail]) => (
+                <div key={term}>
+                  <dt>{term}</dt>
+                  <dd>{detail}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
+          <section id="decisions">
+            <p className="eyebrow">06 / Engineering decisions</p>
+            <h2>Boundaries that protect the product workflow.</h2>
+            <div className="decision-list">
+              {engineeringDecisions.map((decision, index) => (
+                <article key={decision.title}>
+                  <div className="decision-heading">
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <h3>{decision.title}</h3>
+                  </div>
+                  <dl>
+                    <div><dt>Context</dt><dd>{decision.context}</dd></div>
+                    <div><dt>Approach</dt><dd>{decision.approach}</dd></div>
+                    <div><dt>Why it matters</dt><dd>{decision.impact}</dd></div>
+                  </dl>
+                </article>
+              ))}
             </div>
-            <div className="capability-index" aria-label="Veritik product capabilities">
-              {capabilities.map((capability, index) => (
-                <p key={capability}><span>{String(index + 1).padStart(2, "0")}</span>{capability}</p>
+          </section>
+
+          <section id="reliability">
+            <p className="eyebrow">07 / Reliability by design</p>
+            <h2>Failures stay visible and actionable.</h2>
+            <div className="reliability-list">
+              {reliabilityPoints.map(([title, copy], index) => (
+                <article key={title}>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <h3>{title}</h3>
+                  <p>{copy}</p>
+                </article>
               ))}
             </div>
           </section>
 
           <section id="principle" className="ai-principle">
-            <p className="eyebrow">06 / Product principle</p>
+            <p className="eyebrow">08 / Responsible AI</p>
             <blockquote>AI as decision support, not decision authority.</blockquote>
             <p>
-              Veritik can assist with organizing and analyzing candidate information. People
-              remain responsible for interpreting that information and making hiring decisions.
+              Evaluation is job-specific and evidence-led. AI Recommendation remains separate
+              from Recruitment Status, and recruiters remain responsible for reviewing the
+              underlying candidate information and making every hiring decision.
             </p>
+            <ul>
+              <li>Human in the loop</li>
+              <li>Evidence over automation</li>
+              <li>Job-specific evaluation</li>
+              <li>Separate recommendation and operational status</li>
+            </ul>
           </section>
 
           <nav className="case-end-nav" aria-label="Case study navigation">
