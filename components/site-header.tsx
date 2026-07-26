@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { navigation } from "@/config/navigation";
-import { Close, Menu } from "@/components/icons";
+import { ArrowUpRight, Close, Menu } from "@/components/icons";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export function SiteHeader() {
@@ -27,7 +27,9 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <Link href="/contact" className="nav-contact">Let’s talk</Link>
+          <Link href="/resume" className="nav-resume">
+            Resume <ArrowUpRight className="inline-icon" />
+          </Link>
           <ThemeToggle />
         </nav>
         <div className="mobile-actions">

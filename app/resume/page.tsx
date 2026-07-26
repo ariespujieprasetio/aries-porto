@@ -14,7 +14,7 @@ export default function ResumePage() {
   return (
     <>
       <PageIntro eyebrow="Resume / Web edition" title="Senior Software Engineer" description="Five years of professional experience building software across enterprise mobile, backend platforms, web applications, IoT, and engineering research." />
-      <div className="shell resume-toolbar"><a className="button" href="/aries-pujie-prasetio-resume.pdf" download>Download resume <ArrowUpRight className="inline-icon" /></a><p>PDF becomes available when added to <code>public/</code>.</p></div>
+      <div className="shell resume-toolbar"><a className="button" href="/CV_AriesPujieP.pdf" download>Download CV</a><p>PDF version with complete professional details.</p></div>
       <article className="resume shell">
         <header><div><h2>{profile.name}</h2><p>{profile.title} · {profile.location}</p></div><div><a href={`mailto:${profile.email}`}>{profile.email}</a><a href={profile.github}>github.com/ariespujieprasetio</a></div></header>
         <section><p className="eyebrow">Profile</p><p className="resume-summary">Full-stack software engineer with experience delivering end-to-end systems across mobile, backend, web, enterprise software, and IoT. Focused on ownership, maintainability, reliability, performance, and translating business requirements into working technical systems.</p></section>
@@ -22,7 +22,7 @@ export default function ResumePage() {
         <section><p className="eyebrow">Capabilities</p><div className="resume-capabilities">{capabilities.map((item) => <div key={item.title}><strong>{item.title}</strong><p>{item.technologies.join(", ")}</p></div>)}</div></section>
         <section className="resume-columns"><div><p className="eyebrow">Education</p><strong>{education.institution}</strong><p>{education.degree}<br />{education.faculty}<br />{education.period}</p></div><div><p className="eyebrow">Languages</p>{languages.map((item) => <p key={item.language}>{item.language} — {item.proficiency}</p>)}</div></section>
         <section><p className="eyebrow">Recognition</p><div className="resume-columns">{achievements.map((item) => <div key={item.title}><strong>{item.title}</strong><p>{item.organization} · {item.year}</p></div>)}</div></section>
-        <section><p className="eyebrow">Certifications</p><div className="certification-list">{certifications.map((item) => <div key={item.name}><strong>{item.name}</strong><span>{item.issuer}{item.year ? ` · ${item.year}` : ""}</span></div>)}</div></section>
+        <section><p className="eyebrow">Certifications</p><div className="certification-list">{certifications.map((item) => item.url ? <a href={item.url} target="_blank" rel="noreferrer" key={item.name}><strong>{item.name} <ArrowUpRight className="certification-arrow" /></strong><span>{item.issuer}{item.year ? ` · ${item.year}` : ""}</span></a> : <div key={item.name}><strong>{item.name}</strong><span>{item.issuer}{item.year ? ` · ${item.year}` : ""}</span></div>)}</div></section>
       </article>
     </>
   );

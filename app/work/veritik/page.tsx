@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "@/components/icons";
 import { ContactCta } from "@/components/contact-cta";
@@ -38,7 +39,29 @@ export default function VeritikPage() {
           <section id="problem"><p className="eyebrow">02 / Context</p><h2>Making candidate review easier to structure.</h2><p>Recruitment involves information spread across roles, CVs, assessments, and reviewer judgment. Veritik explores how a single product can organize those inputs and assist the evaluation process without presenting automated analysis as the final decision.</p></section>
           <section id="product"><p className="eyebrow">03 / Core capabilities</p><h2>The product surface.</h2><div className="feature-list">{capabilities.map((item, index) => <div key={item}><span>{String(index + 1).padStart(2, "0")}</span><p>{item}</p></div>)}</div></section>
           <section id="engineering"><p className="eyebrow">04 / Engineering</p><h2>Technical decisions will follow evidence.</h2><p>The product architecture and infrastructure details are intentionally not documented here until they can be described accurately. The case study is prepared to capture system boundaries, data flow, AI integration decisions, privacy considerations, and trade-offs as implementation matures.</p><div className="decision-placeholder"><span>CASE STUDY NOTE</span><p>Architecture, stack, and key technical decisions will be added from implementation evidence—not inferred for presentation.</p></div></section>
-          <section id="screens"><p className="eyebrow">05 / Screenshots</p><h2>Product walkthrough coming next.</h2><p>The layout below is ready for real Veritik product captures. No fictional UI has been created to fill the space.</p><div className="screenshot-grid"><div><span>01</span><p>Product overview</p></div><div><span>02</span><p>Candidate workflow</p></div><div><span>03</span><p>Analysis & comparison</p></div></div></section>
+          <section id="screens">
+            <p className="eyebrow">05 / Product views</p>
+            <h2>From screening to structured comparison.</h2>
+            <p>Selected product views show the current Veritik direction using demonstration candidate data.</p>
+            <div className="product-gallery">
+              <figure className="product-shot product-shot-wide">
+                <Image src="/images/work/veritik/candidate-ranking.png" alt="Veritik candidate ranking product view" fill sizes="(max-width: 900px) calc(100vw - 32px), 760px" />
+                <figcaption><span>01</span> Candidate ranking</figcaption>
+              </figure>
+              <figure className="product-shot">
+                <Image src="/images/work/veritik/recruitment-pipeline.png" alt="Veritik recruitment pipeline product view" fill sizes="(max-width: 900px) calc(100vw - 32px), 370px" />
+                <figcaption><span>02</span> Recruitment pipeline</figcaption>
+              </figure>
+              <figure className="product-shot">
+                <Image src="/images/work/veritik/compare-candidate.png" alt="Veritik side-by-side candidate comparison product view" fill sizes="(max-width: 900px) calc(100vw - 32px), 370px" />
+                <figcaption><span>03</span> Candidate comparison</figcaption>
+              </figure>
+              <figure className="product-shot product-shot-wide">
+                <Image src="/images/work/veritik/smarter-hiring.png" alt="Veritik AI-assisted candidate scoring product view" fill sizes="(max-width: 900px) calc(100vw - 32px), 760px" />
+                <figcaption><span>04</span> AI-assisted screening</figcaption>
+              </figure>
+            </div>
+          </section>
           <section id="reflection"><p className="eyebrow">06 / Challenges & lessons</p><h2>A living case study.</h2><p>Challenges, constraints, and lessons will be documented as the product develops and decisions can be supported by real implementation work.</p><Link href="/contact" className="text-link">Discuss the product <ArrowRight className="inline-icon" /></Link></section>
         </div>
       </article>

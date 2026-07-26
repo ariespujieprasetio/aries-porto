@@ -7,18 +7,23 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="shell footer-grid">
         <div>
-          <p className="eyebrow">Start a conversation</p>
-          <h2>Have a system worth building?</h2>
-          <a className="footer-email" href={`mailto:${profile.email}`}>{profile.email}</a>
+          <p className="eyebrow">Jakarta / Available for the right conversation</p>
+          <h2>Let’s build<br /><em>something useful.</em></h2>
+          <p className="footer-intro">
+            Open to conversations around software engineering, products, and thoughtful collaboration.
+          </p>
         </div>
         <div className="footer-links">
-          <Link href="/resume">Resume</Link>
+          <a href={`mailto:${profile.email}`}>
+            Email <ArrowUpRight className="inline-icon" />
+          </a>
           <a href={profile.github} target="_blank" rel="noreferrer">
             GitHub <ArrowUpRight className="inline-icon" />
           </a>
           {profile.linkedin ? (
             <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight className="inline-icon" /></a>
           ) : null}
+          <Link href="/contact">Contact <ArrowUpRight className="inline-icon" /></Link>
         </div>
       </div>
       <div className="shell footer-bottom">

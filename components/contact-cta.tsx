@@ -4,10 +4,10 @@ import { ArrowRight } from "@/components/icons";
 export function ContactCta() {
   return (
     <section className="contact-cta shell">
-      <p className="eyebrow">Available for the right conversation</p>
+      <p className="eyebrow">Software / Products / Collaboration</p>
       <div>
-        <h2>Let’s build software that holds up in the real world.</h2>
-        <Link className="text-link" href="/contact">Start a conversation <ArrowRight className="inline-icon" /></Link>
+        <h2>A good system starts with a clear conversation.</h2>
+        <Link className="text-link" href="/contact">Get in touch <ArrowRight className="inline-icon" /></Link>
       </div>
     </section>
   );

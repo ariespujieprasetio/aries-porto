@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function ExperiencePage() {
   return (
     <>
-      <PageIntro eyebrow="Experience / 2020—Present" title="Five years of expanding ownership." description="From research hardware to enterprise product engineering, each role has widened the systems I can own and the teams I can work alongside." />
+      <PageIntro eyebrow="Career record / 2020—Present" title="Experience measured in ownership, not just time." description="From research hardware to enterprise product engineering, each role has widened the systems I can own and the teams I can work alongside." />
       <section className="section shell timeline">
         {experiences.map((item, index) => (
           <article className={`timeline-item ${item.current ? "current" : ""}`} key={item.company}>

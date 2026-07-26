@@ -4,112 +4,162 @@ import { capabilities } from "@/data/capabilities";
 import { experiences } from "@/data/experience";
 import { profile } from "@/config/profile";
 import { ArrowRight, ArrowUpRight } from "@/components/icons";
-import { ContactCta } from "@/components/contact-cta";
-import { ProjectList } from "@/components/project-list";
-import { SectionHeading } from "@/components/section-heading";
+import { FeaturedProject } from "@/components/featured-project";
+import { EnterpriseWork } from "@/components/enterprise-work";
 
 export default function HomePage() {
   return (
     <>
-      <section className="hero shell">
-        <div className="hero-status">
-          <span className="status-dot" />
-          <span>Senior Software Engineer · Jakarta</span>
+      <section className="identity-hero shell">
+        <div className="identity-line">
+          <p>{profile.name}</p>
+          <span>Portfolio / 2026</span>
         </div>
-        <h1>
-          Engineering reliable products,
-          <br />
-          {" "}<em>from interface to infrastructure.</em>
-        </h1>
-        <div className="hero-bottom">
-          <p>
-            I’m <strong>{profile.name}</strong>, a full-stack engineer with five years of experience
-            building enterprise software across mobile, web, backend, and connected systems.
-          </p>
-          <div className="hero-current">
+        <div className="identity-meta">
+          <div>
+            <span>Role</span>
+            <strong>{profile.title}</strong>
+          </div>
+          <div>
+            <span>Based in</span>
+            <strong>{profile.location}</strong>
+          </div>
+          <div>
             <span>Currently</span>
-            <strong>PT Astra International Tbk</strong>
-            <span>June 2026 — Present</span>
+            <strong>Astra International</strong>
           </div>
         </div>
-        <div className="hero-actions">
-          <Link href="/work" className="button">Explore selected work <ArrowRight className="inline-icon" /></Link>
-          <Link href="/about" className="text-link">More about me <ArrowUpRight className="inline-icon" /></Link>
+        <h1>
+          I build software across
+          <br />
+          {" "}<em>products, platforms</em>
+          <br />
+          and systems.
+        </h1>
+        <div className="identity-footer">
+          <p>
+            Full-stack engineering across mobile, web, backend, enterprise systems,
+            and connected hardware.
+          </p>
+          <div className="hero-actions">
+            <Link href="/work" className="button">
+              Selected work <ArrowUpRight className="inline-icon" />
+            </Link>
+            <Link href="/about" className="text-link">About me</Link>
+          </div>
         </div>
       </section>
 
-      <section className="section shell">
-        <SectionHeading index="01" label="Selected work" title="A range of systems, one engineering mindset." />
-        <ProjectList limit={3} />
-        <div className="section-end"><Link className="text-link" href="/work">View all work <ArrowRight className="inline-icon" /></Link></div>
+      <section className="work-stage">
+        <div className="shell">
+          <header className="work-stage-heading">
+            <p className="eyebrow">Selected work</p>
+            <h2>One public product.<br />A wider body of systems.</h2>
+          </header>
+          <FeaturedProject />
+          <div className="enterprise-intro">
+            <p className="eyebrow">Enterprise engineering</p>
+            <p>
+              Professional work across customer products, internal platforms, APIs,
+              and physical systems—presented without exposing confidential detail.
+            </p>
+          </div>
+          <EnterpriseWork />
+          <div className="section-end">
+            <Link className="text-link" href="/work">
+              Explore the complete work index <ArrowRight className="inline-icon" />
+            </Link>
+          </div>
+        </div>
       </section>
 
-      <section className="section shell">
-        <SectionHeading index="02" label="Experience" title="Building across the full product surface." />
-        <div className="home-experience">
-          {experiences.slice(0, 3).map((item) => (
-            <article key={item.company} className="home-role">
-              <p className="role-period">{item.period}</p>
-              <div>
-                <p className="role-company">{item.company}</p>
+      <section className="career-record shell">
+        <header className="career-heading">
+          <p className="eyebrow">Experience / 2020—Present</p>
+          <h2>Increasing scope.<br /><em>End-to-end ownership.</em></h2>
+        </header>
+        <div className="career-list">
+          {experiences.slice(0, 4).map((item, index) => (
+            <article className={item.current ? "current" : undefined} key={item.company}>
+              <div className="career-period">
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <p>{item.period}</p>
+              </div>
+              <div className="career-role">
+                <p>{item.company}</p>
                 <h3>{item.role}</h3>
               </div>
-              <p>{item.summary}</p>
+              <p className="career-summary">{item.summary}</p>
+              <p className="career-stack">{item.technologies?.slice(0, 4).join(" · ")}</p>
             </article>
           ))}
         </div>
-        <div className="section-end"><Link className="text-link" href="/experience">Full experience <ArrowRight className="inline-icon" /></Link></div>
+        <div className="section-end">
+          <Link className="text-link" href="/experience">
+            Full career record <ArrowRight className="inline-icon" />
+          </Link>
+        </div>
       </section>
 
-      <section className="section section-tint">
+      <section className="capability-manifesto">
         <div className="shell">
-          <SectionHeading index="03" label="Capabilities" title="Breadth without losing depth." />
-          <div className="capability-grid">
-            {capabilities.map((capability, index) => (
-              <article key={capability.title} className="capability">
-                <span className="capability-number">0{index + 1}</span>
+          <header>
+            <p className="eyebrow">What I engineer</p>
+            <p className="manifesto-line">
+              I move between layers to keep the product—and the system behind it—coherent.
+            </p>
+          </header>
+          <div className="capability-editorial">
+            {capabilities.map((capability) => (
+              <article key={capability.title}>
                 <h3>{capability.title}</h3>
                 <p>{capability.description}</p>
-                <div className="tech-list">{capability.technologies.join(" · ")}</div>
+                <span>{capability.technologies.join(" / ")}</span>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="section shell achievements-home">
-        <SectionHeading index="04" label="Recognition" title="Ideas carried beyond implementation." />
-        <div className="achievement-list">
-          {achievements.map((item) => (
-            <article key={item.title}>
-              <span>{item.year}</span>
-              <h3>{item.title}</h3>
-              <p>{item.organization}</p>
-            </article>
-          ))}
+      <section className="evidence-section shell">
+        <div className="recognition-editorial">
+          <p className="eyebrow">Selected recognition</p>
+          <div>
+            {achievements.map((item) => (
+              <article key={item.title}>
+                <span>{item.year}</span>
+                <h3>{item.title}</h3>
+                <p>{item.organization}</p>
+              </article>
+            ))}
+          </div>
         </div>
-      </section>
-
-      <section className="section shell about-preview">
-        <p className="eyebrow">05 / Engineering journey</p>
-        <div>
-          <p className="large-copy">
-            My path into software began with telecommunication engineering and a radiation
-            monitoring system—an early lesson that reliable products are shaped by the whole
-            system, not one layer.
+        <aside className="journey-teaser">
+          <p className="eyebrow">Engineering beyond the browser</p>
+          <p>
+            My path began in Telecommunication Engineering and hardware research,
+            including a real-time radiation monitoring system, before expanding into
+            backend, web, mobile, and enterprise software.
           </p>
-          <Link className="text-link" href="/about">Read my story <ArrowRight className="inline-icon" /></Link>
-        </div>
+          <Link className="text-link" href="/about">
+            Read my story <ArrowRight className="inline-icon" />
+          </Link>
+        </aside>
       </section>
 
-      <section className="section shell writing-preview">
-        <SectionHeading index="06" label="Engineering notes" title="Writing, soon." />
-        <div className="empty-row">
-          <p>Notes on architecture, product engineering, and lessons from building across stacks.</p>
-          <Link className="text-link" href="/writing">Visit writing <ArrowRight className="inline-icon" /></Link>
+      <section className="home-contact shell">
+        <p className="eyebrow">Aries Pujie Prasetio / Jakarta</p>
+        <div>
+          <h2>Useful software.<br /><em>Built with context.</em></h2>
+          <p>
+            Open to thoughtful conversations about senior engineering roles,
+            product collaboration, and selected technical work.
+          </p>
+          <a className="button" href={`mailto:${profile.email}`}>
+            Email Aries <ArrowUpRight className="inline-icon" />
+          </a>
         </div>
       </section>
-      <ContactCta />
     </>
   );
 }
