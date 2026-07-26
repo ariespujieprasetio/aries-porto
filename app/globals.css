@@ -815,7 +815,7 @@ a.project-row:hover { padding-left: 12px; color: var(--accent); }
   grid-template-columns: 1.65fr 1fr;
   gap: 12%;
   padding-top: clamp(120px, 14vw, 190px);
-  padding-bottom: clamp(120px, 14vw, 190px);
+  padding-bottom: clamp(85px, 9vw, 125px);
 }
 .recognition-editorial > div { margin-top: 45px; border-top: 1px solid var(--ink); }
 .recognition-editorial article {
@@ -1006,7 +1006,7 @@ a.project-row:hover { padding-left: 12px; color: var(--accent); }
   }
   .capability-editorial h3 { font-size: 31px; }
   .capability-editorial span { margin-top: 30px; }
-  .evidence-section { padding-top: 100px; padding-bottom: 100px; gap: 80px; }
+  .evidence-section { padding-top: 100px; padding-bottom: 78px; gap: 72px; }
   .recognition-editorial article { grid-template-columns: 45px 1fr; }
   .recognition-editorial article p { grid-column: 2; }
   .journey-teaser > p:nth-child(2) { font-size: 25px; }

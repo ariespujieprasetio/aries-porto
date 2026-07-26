@@ -7,6 +7,13 @@ import { ArrowRight, ArrowUpRight } from "@/components/icons";
 import { FeaturedProject } from "@/components/featured-project";
 import { EnterpriseWork } from "@/components/enterprise-work";
 
+const homepageCapabilities = [
+  { ...capabilities[0], title: "Backend & Platforms", technologies: ["Laravel", "Go", "Spring Boot"] },
+  { ...capabilities[1], title: "Product Interfaces", technologies: ["React", "Next.js", "React Native"] },
+  { ...capabilities[2], title: "Systems & Integration", technologies: ["REST", "PostgreSQL", "IoT"] },
+  { ...capabilities[3], title: "Delivery & Quality", technologies: ["Docker", "AWS", "CI/CD"] },
+];
+
 export default function HomePage() {
   return (
     <>
@@ -110,7 +117,7 @@ export default function HomePage() {
             </p>
           </header>
           <div className="capability-editorial">
-            {capabilities.map((capability) => (
+            {homepageCapabilities.map((capability) => (
               <article key={capability.title}>
                 <h3>{capability.title}</h3>
                 <p>{capability.description}</p>
