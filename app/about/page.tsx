@@ -14,7 +14,7 @@ const journey = [
   ["2018—2022", "Telecommunication engineering", "Built a foundation in electronics, networks, and the way physical and digital systems interact."],
   ["2021—2022", "Research & connected hardware", "Worked across sensors, embedded processing, real-time communication, and Android at BATAN."],
   ["2022—2025", "Full-stack & IoT systems", "Expanded into backend, web products, operational platforms, and connected industrial systems."],
-  ["2025—Now", "Enterprise product engineering", "Owns work across APIs, authentication, web, and mobile products in the Astra ecosystem."],
+  ["2025—Now", "Enterprise product engineering", "Moved into broader ownership across APIs, authentication, web, and mobile products in the Astra ecosystem."],
 ];
 
 export default function AboutPage() {

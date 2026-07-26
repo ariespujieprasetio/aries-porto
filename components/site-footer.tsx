@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { profile } from "@/config/profile";
 import { ArrowUpRight } from "@/components/icons";
 
@@ -7,10 +6,10 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="shell footer-grid">
         <div>
-          <p className="eyebrow">Jakarta / Available for the right conversation</p>
+          <p className="eyebrow">Software / Products / Selected collaboration</p>
           <h2>Let’s build<br /><em>something useful.</em></h2>
           <p className="footer-intro">
-            Open to conversations around software engineering, products, and thoughtful collaboration.
+            I’m open to conversations around software engineering, products, and selected collaborations.
           </p>
         </div>
         <div className="footer-links">
@@ -23,7 +22,6 @@ export function SiteFooter() {
           {profile.linkedin ? (
             <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight className="inline-icon" /></a>
           ) : null}
-          <Link href="/contact">Contact <ArrowUpRight className="inline-icon" /></Link>
         </div>
       </div>
       <div className="shell footer-bottom">

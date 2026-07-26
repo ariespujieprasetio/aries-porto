@@ -20,7 +20,7 @@ export default function ExperiencePage() {
               <p className="eyebrow">{item.company}</p>
               <h2>{item.role}</h2>
               <p className="timeline-summary">{item.summary}</p>
-              {item.highlights.length ? <ul>{item.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul> : null}
+              {index < 3 && item.highlights.length ? <ul>{item.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul> : null}
               {item.technologies ? <div className="tag-row">{item.technologies.map((tech) => <span key={tech}>{tech}</span>)}</div> : null}
             </div>
           </article>

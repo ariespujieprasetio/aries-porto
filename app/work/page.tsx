@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ContactCta } from "@/components/contact-cta";
 import { EnterpriseWork } from "@/components/enterprise-work";
 import { FeaturedProject } from "@/components/featured-project";
 import { PageIntro } from "@/components/page-intro";
@@ -23,7 +22,6 @@ export default function WorkPage() {
         <EnterpriseWork />
       </section>
       <section className="shell confidentiality-note"><p className="eyebrow">A note on enterprise work</p><p>Some systems shown here support internal operations or customer-facing services at large organizations. Details are presented at an appropriate level and do not disclose confidential implementation information.</p></section>
-      <ContactCta />
     </>
   );
 }

@@ -79,7 +79,7 @@ export default function HomePage() {
           <h2>Increasing scope.<br /><em>End-to-end ownership.</em></h2>
         </header>
         <div className="career-list">
-          {experiences.slice(0, 4).map((item, index) => (
+          {experiences.slice(0, 3).map((item, index) => (
             <article className={item.current ? "current" : undefined} key={item.company}>
               <div className="career-period">
                 <span>{String(index + 1).padStart(2, "0")}</span>
@@ -96,7 +96,7 @@ export default function HomePage() {
         </div>
         <div className="section-end">
           <Link className="text-link" href="/experience">
-            Full career record <ArrowRight className="inline-icon" />
+            View full experience <ArrowRight className="inline-icon" />
           </Link>
         </div>
       </section>
@@ -147,19 +147,6 @@ export default function HomePage() {
         </aside>
       </section>
 
-      <section className="home-contact shell">
-        <p className="eyebrow">Aries Pujie Prasetio / Jakarta</p>
-        <div>
-          <h2>Useful software.<br /><em>Built with context.</em></h2>
-          <p>
-            Open to thoughtful conversations about senior engineering roles,
-            product collaboration, and selected technical work.
-          </p>
-          <a className="button" href={`mailto:${profile.email}`}>
-            Email Aries <ArrowUpRight className="inline-icon" />
-          </a>
-        </div>
-      </section>
     </>
   );
 }

@@ -5,12 +5,12 @@ export const achievements = [
     year: "2024",
   },
   {
-    title: "Most Contribution Innovation Paper",
+    title: "Best Innovation Warrior",
     organization: "PT Global Service Indonesia",
     year: "2023",
   },
   {
-    title: "The Best Innovation Warrior",
+    title: "Most Contribution Innovation Paper",
     organization: "PT Global Service Indonesia",
     year: "2023",
   },

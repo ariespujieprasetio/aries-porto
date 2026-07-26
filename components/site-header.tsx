@@ -23,6 +23,7 @@ export function SiteHeader() {
               key={item.href}
               href={item.href}
               className={pathname.startsWith(item.href) ? "active" : undefined}
+              aria-current={pathname.startsWith(item.href) ? "page" : undefined}
             >
               {item.label}
             </Link>
@@ -49,7 +50,13 @@ export function SiteHeader() {
       <nav id="mobile-navigation" className={`mobile-nav ${open ? "open" : ""}`} aria-label="Mobile navigation">
         <div className="shell">
           {[...navigation, { label: "Contact", href: "/contact" }, { label: "Resume", href: "/resume" }].map((item, index) => (
-            <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={pathname.startsWith(item.href) ? "active" : undefined}
+              aria-current={pathname.startsWith(item.href) ? "page" : undefined}
+              onClick={() => setOpen(false)}
+            >
               <span>0{index + 1}</span>{item.label}
             </Link>
           ))}

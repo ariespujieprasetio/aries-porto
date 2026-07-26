@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "@/components/icons";
-import { ContactCta } from "@/components/contact-cta";
 
 export const metadata: Metadata = {
   title: "Veritik — AI Recruitment Product",
@@ -22,25 +20,29 @@ export default function VeritikPage() {
         <p>An AI-assisted recruitment platform designed to bring structure and clarity to candidate screening.</p>
         <div className="case-tags"><span>Product engineering</span><span>Recruitment workflow</span><span>AI-assisted analysis</span></div>
       </header>
-      <div className="case-visual" aria-label="Abstract product visual for Veritik">
-        <div className="case-visual-inner shell">
-          <span>VERITIK / PRODUCT SYSTEM</span>
-          <div className="visual-mark">V<span>.</span></div>
-          <p>Evidence over instinct.</p>
-        </div>
+      <div className="case-product-hero shell">
+        <figure>
+          <Image
+            src="/images/work/veritik/banner-veritik.png"
+            alt="Veritik candidate ranking, recruitment pipeline, and comparison interface"
+            fill
+            priority
+            sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1200px) calc(100vw - 48px), 1180px"
+          />
+          <figcaption>Veritik / Product overview</figcaption>
+        </figure>
       </div>
       <article className="case-body shell">
         <aside className="case-nav" aria-label="Case study sections">
           <p className="eyebrow">In this case study</p>
-          <a href="#overview">Overview</a><a href="#problem">Context</a><a href="#product">Product</a><a href="#engineering">Engineering</a><a href="#screens">Screenshots</a><a href="#reflection">Reflection</a>
+          <a href="#overview">Overview</a><a href="#problem">Context</a><a href="#product">Product</a><a href="#screens">Product views</a>
         </aside>
         <div className="case-content">
           <section id="overview"><p className="eyebrow">01 / Overview</p><h2>A focused product for a complex decision process.</h2><p>Veritik is a personal software product I’m building around recruitment and candidate screening. It brings job setup, candidate information, CV processing, analysis, ranking, comparison, and structured evaluation into one coherent workflow.</p><p>The product is still in development. This case study intentionally avoids unverified claims about usage, outcomes, or model performance.</p></section>
           <section id="problem"><p className="eyebrow">02 / Context</p><h2>Making candidate review easier to structure.</h2><p>Recruitment involves information spread across roles, CVs, assessments, and reviewer judgment. Veritik explores how a single product can organize those inputs and assist the evaluation process without presenting automated analysis as the final decision.</p></section>
           <section id="product"><p className="eyebrow">03 / Core capabilities</p><h2>The product surface.</h2><div className="feature-list">{capabilities.map((item, index) => <div key={item}><span>{String(index + 1).padStart(2, "0")}</span><p>{item}</p></div>)}</div></section>
-          <section id="engineering"><p className="eyebrow">04 / Engineering</p><h2>Technical decisions will follow evidence.</h2><p>The product architecture and infrastructure details are intentionally not documented here until they can be described accurately. The case study is prepared to capture system boundaries, data flow, AI integration decisions, privacy considerations, and trade-offs as implementation matures.</p><div className="decision-placeholder"><span>CASE STUDY NOTE</span><p>Architecture, stack, and key technical decisions will be added from implementation evidence—not inferred for presentation.</p></div></section>
           <section id="screens">
-            <p className="eyebrow">05 / Product views</p>
+            <p className="eyebrow">04 / Product views</p>
             <h2>From screening to structured comparison.</h2>
             <p>Selected product views show the current Veritik direction using demonstration candidate data.</p>
             <div className="product-gallery">
@@ -62,10 +64,8 @@ export default function VeritikPage() {
               </figure>
             </div>
           </section>
-          <section id="reflection"><p className="eyebrow">06 / Challenges & lessons</p><h2>A living case study.</h2><p>Challenges, constraints, and lessons will be documented as the product develops and decisions can be supported by real implementation work.</p><Link href="/contact" className="text-link">Discuss the product <ArrowRight className="inline-icon" /></Link></section>
         </div>
       </article>
-      <ContactCta />
     </>
   );
 }
