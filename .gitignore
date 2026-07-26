@@ -5,4 +5,5 @@ out
 .env*
 !.env.example
 .DS_Store
+*.tsbuildinfo
 public/aries-pujie-prasetio-resume.pdf
