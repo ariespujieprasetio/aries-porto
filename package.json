@@ -4,21 +4,23 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/prepare-static.mjs",
-    "start": "next start",
+    "build": "vinext build && node scripts/prepare-sites.mjs",
+    "start": "vinext start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "^16.2.12",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "vinext": "^1.0.0-beta.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",
     "@types/node": "22.15.3",
-    "@types/react": "19.1.2",
-    "@types/react-dom": "19.1.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-rsc": "^0.5.30",
     "autoprefixer": "10.4.21",
     "eslint": "9.25.1",
     "eslint-config-next": "^16.2.12",
