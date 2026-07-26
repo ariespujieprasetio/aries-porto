@@ -6,9 +6,7 @@ export const profile = {
   email: "mbulkragan12@gmail.com",
   github: "https://github.com/ariespujieprasetio",
   linkedin: null as string | null, // TODO: Add LinkedIn profile URL.
-  siteUrl:
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    "https://aries-pujie-portfolio.arsiparies.chatgpt.site",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://ariespujie.dev",
   description:
     "Senior Software Engineer in Jakarta building reliable software across mobile, web, backend, enterprise systems, and IoT.",
 } as const;
