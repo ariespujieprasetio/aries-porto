@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { isLocale } from "@/config/site";
+import { isLocale, pick, site } from "@/config/site";
 import { projects } from "@/content/projects";
 import { metadata } from "@/lib/seo";
 import { CaseStudy } from "@/components/studio/case-study";
@@ -12,7 +12,9 @@ export async function generateMetadata({ params }: Props) {
     ? metadata(
         locale,
         "work/" + slug,
-        project.name + " — " + project.category,
+        project.name +
+          pick(locale, " - Studi Kasus | ", " - Case Study | ") +
+          site.name,
         project.description,
       )
     : {};

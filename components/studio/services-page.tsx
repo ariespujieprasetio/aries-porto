@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { WebsitePackage } from "./website-package";
-import { type Locale, pick } from "@/config/site";
+import { type Locale, pick, site } from "@/config/site";
 import { services } from "@/content/services";
 import { CTA, Intro, SectionTitle } from "./shared";
 import { Process } from "./home";
@@ -132,10 +132,11 @@ export function ServicesPage({ locale }: { locale: Locale }) {
               "Pengembangan software custom",
               "Custom software development",
             ),
-            provider: { "@id": "https://ariespujieprasetio.my.id/#person" },
+            url: site.url + "/" + locale + "/services",
+            provider: { "@id": site.url + "/#person" },
             serviceType: "Software development",
             areaServed: ["Indonesia"],
-          }),
+          }).replace(/</g, "\\u003c"),
         }}
       />
     </>

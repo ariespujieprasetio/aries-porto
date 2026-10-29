@@ -1,22 +1,20 @@
 import type { Metadata } from "next";
-import { type Locale, site, pick } from "@/config/site";
+import { languageAlternates, localizedUrl } from "@/lib/site-urls";
+import { type Locale, pick } from "@/config/site";
 export function metadata(
   locale: Locale,
   path: string,
   title: string,
   description: string,
 ): Metadata {
-  const url = site.url + "/" + locale + (path ? "/" + path : "");
+  const url = localizedUrl(locale, path);
   return {
-    title,
+    title: { absolute: title },
     description,
+    robots: { index: true, follow: true },
     alternates: {
       canonical: url,
-      languages: {
-        id: site.url + "/id" + (path ? "/" + path : ""),
-        en: site.url + "/en" + (path ? "/" + path : ""),
-        "x-default": site.url + "/id" + (path ? "/" + path : ""),
-      },
+      languages: languageAlternates(path),
     },
     openGraph: {
       title,
@@ -33,8 +31,8 @@ export function metadata(
           height: 630,
           alt: pick(
             locale,
-            "ARIES. Rekayasa software untuk bisnis Anda.",
-            "ARIES. Software engineering for your business.",
+            "Aries Pujie Prasetio - Software Engineer & Software Studio",
+            "Aries Pujie Prasetio - Software Engineer & Software Studio",
           ),
         },
       ],

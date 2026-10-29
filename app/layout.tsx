@@ -13,12 +13,11 @@ export const metadata: Metadata = {
   referrer: "strict-origin",
   metadataBase: new URL(site.url),
   title: {
-    default: "ARIES. — Independent Software Studio",
-    template: "%s | ARIES.",
+    default: "Aries Pujie Prasetio | ARIES. — Independent Software Studio",
+    template: "%s | Aries Pujie Prasetio",
   },
   description:
     "Independent software engineer in Jakarta. Websites, business applications, mobile development, and integrations.",
-  robots: { index: true, follow: true },
 };
 export const viewport: Viewport = { themeColor: "#0b1020" };
 export default async function RootLayout({

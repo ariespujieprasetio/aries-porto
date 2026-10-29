@@ -1,5 +1,6 @@
+import { identitySchema } from "@/lib/structured-data";
 import { notFound } from "next/navigation";
-import { isLocale, labels, site } from "@/config/site";
+import { isLocale, labels } from "@/config/site";
 import { Navigation } from "@/components/studio/navigation";
 import { Footer } from "@/components/studio/shared";
 import { AnalyticsEvents } from "@/components/studio/analytics";
@@ -12,30 +13,7 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const schema = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Person",
-        "@id": site.url + "/#person",
-        name: site.name,
-        jobTitle: "Senior Software Engineer",
-        url: site.url,
-        sameAs: [site.github, site.linkedin],
-        address: {
-          "@type": "PostalAddress",
-          addressLocality: "Jakarta",
-          addressCountry: "ID",
-        },
-      },
-      {
-        "@type": "WebSite",
-        name: "ARIES. — Independent Software Studio",
-        url: site.url,
-        inLanguage: ["id", "en"],
-      },
-    ],
-  };
+  const schema = identitySchema(locale);
   return (
     <>
       <a className="skip-link" href="#main-content">

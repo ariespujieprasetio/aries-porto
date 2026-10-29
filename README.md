@@ -70,3 +70,7 @@ No vercel.json is needed for this standard Next.js app. In Vercel manually verif
 6. Retest in a fresh browser profile and inspect any previously installed service worker/site data. This repository registers no service worker.
 
 The audit environment could not retrieve the live apex reliably (connection timeouts); a www request also encountered certificate validation failure. These observations do not prove a public outage or certificate misconfiguration. Live domain routing, deployment aliases, certificates, provider delivery and analytics ingestion require manual verification. No deployment, DNS change, email send, commit, or push is performed by this repository update.
+
+## Technical SEO and Search Console
+
+See [the SEO audit and deployment runbook](docs/SEO.md) for sitemap coverage, metadata changes, verified local results, production-domain evidence, and Search Console resubmission steps. Existing DNS verification remains unchanged.

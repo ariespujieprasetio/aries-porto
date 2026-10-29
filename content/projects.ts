@@ -1,10 +1,4 @@
 import { type Locale, pick } from "@/config/site";
-export const projectSlugs = [
-  "velutara",
-  "veritik",
-  "enterprise",
-  "radiation-monitor",
-];
 export function projects(locale: Locale) {
   return [
     {
@@ -191,3 +185,6 @@ export function projects(locale: Locale) {
     },
   ];
 }
+
+// Derive discovery from the same content model as the real case-study pages.
+export const projectSlugs = projects("id").map((project) => project.slug);

@@ -1,3 +1,4 @@
+import { profileSchema } from "@/lib/structured-data";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/config/site";
 import { pageMetadata } from "@/lib/page-metadata";
@@ -10,5 +11,18 @@ export async function generateMetadata({ params }: Props) {
 export default async function Page({ params }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <AboutPage locale={locale} />;
+  return (
+    <>
+      <AboutPage locale={locale} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(profileSchema(locale)).replace(
+            /</g,
+            "\\u003c",
+          ),
+        }}
+      />
+    </>
+  );
 }
