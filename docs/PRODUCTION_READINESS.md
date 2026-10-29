@@ -79,7 +79,7 @@ In Vercel's domain settings, after owner review:
 
 1. Set `ariespujieprasetio.my.id` to serve the intended production deployment instead of redirecting to www.
 2. Then configure `www.ariespujieprasetio.my.id` to permanently redirect to the apex, preserving path/query. Remove the current opposite redirect first to avoid a loop.
-3. Verify HTTPS/certificates and both locale routes. Expected apex root: 308 to /id; apex /id and /en: 200.
+3. Verify HTTPS/certificates and both locale routes. Expected apex root: 308 to /en; apex /id and /en: 200.
 4. Verify apex /sitemap.xml: 200/application/xml; apex /robots.txt: 200/text/plain. Sitemap loc URLs should then resolve directly to 200.
 5. Recheck canonical, hreflang and social URLs. Keep the existing Search Console verification TXT unchanged.
 

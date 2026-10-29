@@ -15,7 +15,7 @@ The established brand, page structure, and bilingual routes are preserved.
 - `lib/seo.ts`: localized canonical URLs, hreflang and social metadata.
 - `proxy.ts`: sets HTML locale from the URL, overwriting untrusted incoming locale headers.
 
-Both /id and /en expose home, services, work, about, experience, contact, resume, and four case studies. Legacy unprefixed routes redirect to Indonesian. Root redirects permanently to /id in next.config.ts before rendering, with app/page.tsx retained as a fallback. No language-detection redirects or catch-all Vercel rewrites are required.
+Both /id and /en expose home, services, work, about, experience, contact, resume, and four case studies. Legacy unprefixed routes redirect to Indonesian. Root redirects permanently to /en in next.config.ts before rendering, with app/page.tsx retained as a fallback. No language-detection redirects or catch-all Vercel rewrites are required.
 
 ## Project assets
 
@@ -65,7 +65,7 @@ No vercel.json is needed for this standard Next.js app. In Vercel manually verif
 1. The custom apex domain points to the intended project and current Production deployment/commit, not an old project or Preview deployment.
 2. The production branch and Root Directory refer to this repository/app. Use the Next.js framework preset and default output; remove any stale dashboard build/output overrides.
 3. Inspect dashboard redirects/rewrites and upstream DNS/proxy rules. Configure www to redirect to the canonical apex and ensure both certificates are valid.
-4. Compare /, /id and /en on the deployment URL and custom domain. Root should return 308 to /id (preserving query parameters). Localized pages should return 200, with matching canonical, hreflang and HTML lang.
+4. Compare /, /id and /en on the deployment URL and custom domain. Root should return 308 to /en (preserving query parameters). Localized pages should return 200, with matching canonical, hreflang and HTML lang.
 5. Check response Location, Age, Cache-Control and x-vercel-cache headers. If the correct deployment URL works but the domain differs, inspect domain aliases/proxy caching. After identifying the cause, redeploy or invalidate the affected cache; avoid guessing that clearing cache fixes a routing mismatch.
 6. Retest in a fresh browser profile and inspect any previously installed service worker/site data. This repository registers no service worker.
 

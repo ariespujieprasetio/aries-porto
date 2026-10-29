@@ -46,7 +46,7 @@ Keep the single Next.js `MetadataRoute.Sitemap` and `MetadataRoute.Robots` mecha
 
 Sitemap contains 22 final canonical destinations: seven public pages per locale (home, services, work, about, experience, contact, resume), plus four project detail pages per locale. Project slugs are derived from the same content model used by case-study pages, eliminating a separately maintained slug list.
 
-Every entry has id, en and x-default equivalents. x-default points to Indonesian because root always redirects to /id. Redirect-only roots/legacy paths, API, errors, unknown locales, query variants and private routes are excluded. No lastmod, priority or changefreq is invented: the content model has no verified publication/modification timestamps.
+Every entry has id, en and x-default equivalents. x-default now points to English because root redirects to /en. Redirect-only roots/legacy paths, API, errors, unknown locales, query variants and private routes are excluded. No lastmod, priority or changefreq is invented: the content model has no verified publication/modification timestamps.
 
 Robots output remains:
 
@@ -133,7 +133,7 @@ Temporary test scripts/screenshots were kept outside the repository. No live ema
 1. Review the changes, then deploy only after owner approval. Confirm the intended production branch, commit, project and Root Directory; use the Next.js preset and default output.
 2. Compare the current deployment URL with the custom domain. Verify the apex is assigned to the intended project and production deployment. Inspect deployment protection, firewall/bot rules, redirects and any upstream proxy/cache. Discovery endpoints must be public and must not receive login/challenge HTML.
 3. Compare current DNS resolution with the values Vercel shows for this project, including any AAAA record, without replacing the verification TXT. DNS/production changes require separate owner authorization; do not copy the diagnostic IPs above into DNS.
-4. Verify HTTP redirects to HTTPS and www redirects to the apex while preserving the path. Root should then lead to /id. Check certificates and redirect chains from an independent network. Test direct /id and /en, not only root.
+4. Verify HTTP redirects to HTTPS and www redirects to the apex while preserving the path. Root should then lead to /en. Check certificates and redirect chains from an independent network. Test direct /id and /en, not only root.
 5. Check apex sitemap and robots responses with real GET requests: 200, XML/plain-text content, no challenge page, no redirect loop, no restrictive X-Robots-Tag. Confirm the XML contains the new deployment's canonical routes.
 6. Inspect the old `aries-porto-xyme.vercel.app` alias in Vercel. If it is an editable domain/alias on a project you control, configure a path-preserving permanent redirect to the primary domain using supported domain settings. Test representative paths and loops first.
 7. If that alias is an immutable deployment URL or belongs to another project, do not assume its redirect can be changed. Keep primary-domain canonical signals on editable deployments, avoid promoting old links, and inspect Google-selected canonicals. Do not apply a blanket redirect to every vercel.app hostname or block all previews to solve a single alias.

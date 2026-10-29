@@ -9,7 +9,7 @@ export function languageAlternates(path = "") {
   return {
     id: localizedUrl("id", path),
     en: localizedUrl("en", path),
-    // The root deterministically redirects to Indonesian, not language detection.
-    "x-default": localizedUrl("id", path),
+    // The root deterministically redirects to English, not language detection.
+    "x-default": localizedUrl("en", path),
   };
 }
