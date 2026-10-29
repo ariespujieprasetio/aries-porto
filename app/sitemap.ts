@@ -1,11 +1,17 @@
 import type { MetadataRoute } from "next";
-import { profile } from "@/config/profile";
-
+import { locales, pages, site } from "@/config/site";
+import { projectSlugs } from "@/content/projects";
 export default function sitemap(): MetadataRoute.Sitemap {
-  return ["", "/about", "/work", "/work/veritik", "/experience", "/writing", "/resume", "/contact"].map((path) => ({
-    url: `${profile.siteUrl}${path}`,
-    lastModified: new Date(),
-    changeFrequency: path === "" ? "monthly" : "yearly",
-    priority: path === "" ? 1 : path === "/work" ? 0.9 : 0.7,
-  }));
+  return locales.flatMap((locale) =>
+    [...pages, ...projectSlugs.map((slug) => "work/" + slug)].map((path) => ({
+      url: site.url + "/" + locale + (path ? "/" + path : ""),
+      alternates: {
+        languages: {
+          id: site.url + "/id" + (path ? "/" + path : ""),
+          en: site.url + "/en" + (path ? "/" + path : ""),
+          "x-default": site.url + "/id" + (path ? "/" + path : ""),
+        },
+      },
+    })),
+  );
 }
