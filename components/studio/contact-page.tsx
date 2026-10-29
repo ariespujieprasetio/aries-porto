@@ -1,4 +1,5 @@
 import { type Locale, pick, site, whatsappUrl } from "@/config/site";
+import { inquiryConfig } from "@/lib/inquiry-config";
 import { Intro } from "./shared";
 import { InquiryForm } from "./inquiry-form";
 export function ContactPage({
@@ -8,6 +9,7 @@ export function ContactPage({
   locale: Locale;
   initialService?: string;
 }) {
+  const config = inquiryConfig();
   const whatsapp = whatsappUrl(locale);
   return (
     <>
@@ -33,7 +35,11 @@ export function ContactPage({
           <p className="eyebrow">
             {pick(locale, "KONTAK LANGSUNG", "DIRECT CONTACT")}
           </p>
-          <a className="contact-email" href={"mailto:" + site.email}>
+          <a
+            className="contact-email"
+            data-event="contact_cta"
+            href={"mailto:" + site.email}
+          >
             {site.email} ↗︎
           </a>
           <p>Jakarta, Indonesia · UTC+7</p>
@@ -87,15 +93,8 @@ export function ContactPage({
         <InquiryForm
           locale={locale}
           initialService={initialService}
-          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
-          configured={
-            !!(
-              process.env.RESEND_API_KEY &&
-              process.env.CONTACT_FROM_EMAIL &&
-              process.env.TURNSTILE_SECRET_KEY &&
-              process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
-            )
-          }
+          siteKey={config.siteKey}
+          configured={config.ready}
         />
       </section>
     </>

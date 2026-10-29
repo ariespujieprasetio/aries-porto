@@ -69,7 +69,7 @@ No vercel.json is needed for this standard Next.js app. In Vercel manually verif
 5. Check response Location, Age, Cache-Control and x-vercel-cache headers. If the correct deployment URL works but the domain differs, inspect domain aliases/proxy caching. After identifying the cause, redeploy or invalidate the affected cache; avoid guessing that clearing cache fixes a routing mismatch.
 6. Retest in a fresh browser profile and inspect any previously installed service worker/site data. This repository registers no service worker.
 
-The audit environment could not retrieve the live apex reliably (connection timeouts); a www request also encountered certificate validation failure. These observations do not prove a public outage or certificate misconfiguration. Live domain routing, deployment aliases, certificates, provider delivery and analytics ingestion require manual verification. No deployment, DNS change, email send, commit, or push is performed by this repository update.
+A follow-up production audit now reaches the site: apex redirects to www while canonical and sitemap URLs still point to apex. The live form receives an empty public Turnstile site key. See [the production-readiness report](docs/PRODUCTION_READINESS.md) for the confirmed findings and required configuration steps. No deployment or domain change was performed.
 
 ## Technical SEO and Search Console
 

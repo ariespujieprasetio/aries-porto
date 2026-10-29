@@ -172,17 +172,36 @@ export function InquiryForm({
       ) {
         setState("error");
         setMessage(
-          result.code === "rate_limit"
+          result.code === "verification" ||
+            result.code === "verification_unavailable"
             ? pick(
                 locale,
-                "Terlalu banyak percobaan. Tunggu 10 menit atau hubungi saya melalui email.",
-                "Too many attempts. Please wait 10 minutes or email me directly.",
+                "Verifikasi keamanan belum berhasil. Ulangi verifikasi lalu coba lagi. Isian Anda tetap tersedia.",
+                "Security verification could not be completed. Complete the check again and retry. Your answers are preserved.",
               )
-            : pick(
-                locale,
-                "Pengiriman belum dapat dikonfirmasi. Isian Anda tetap tersedia. Ulangi verifikasi keamanan lalu coba lagi, atau hubungi saya melalui email.",
-                "Delivery could not be confirmed. Your answers are still here. Complete the security check again and retry, or email me directly.",
-              ),
+            : result.code === "not_configured"
+              ? pick(
+                  locale,
+                  "Layanan formulir sedang tidak tersedia. Isian Anda tetap tersedia; silakan gunakan email atau WhatsApp.",
+                  "The inquiry service is currently unavailable. Your answers are preserved; please use email or WhatsApp.",
+                )
+              : result.code === "origin"
+                ? pick(
+                    locale,
+                    "Alamat halaman tidak diizinkan untuk pengiriman. Buka website resmi atau gunakan email langsung.",
+                    "This page address is not permitted to submit inquiries. Open the official website or use direct email.",
+                  )
+                : result.code === "rate_limit"
+                  ? pick(
+                      locale,
+                      "Terlalu banyak percobaan. Tunggu 10 menit atau hubungi saya melalui email.",
+                      "Too many attempts. Please wait 10 minutes or email me directly.",
+                    )
+                  : pick(
+                      locale,
+                      "Pengiriman belum dapat dikonfirmasi. Isian Anda tetap tersedia. Ulangi verifikasi keamanan lalu coba lagi, atau hubungi saya melalui email.",
+                      "Delivery could not be confirmed. Your answers are still here. Complete the security check again and retry, or email me directly.",
+                    ),
         );
       } else {
         setState("success");

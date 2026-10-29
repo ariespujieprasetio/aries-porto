@@ -2,6 +2,8 @@
 
 Audit date: 29 October 2026 (Asia/Jakarta). This report separates repository implementation, local production-mode testing, and observations from public hosts.
 
+> Follow-up: the site is now reachable. See [the newer production-readiness audit](PRODUCTION_READINESS.md) for current apex/www responses and form configuration findings. The earlier timeout observations below are historical.
+
 ## Observed issue and root cause
 
 The owner reported that Search Console showed **Unknown / Couldn't fetch / 0 discovered pages** for `https://ariespujieprasetio.my.id/sitemap.xml`, submitted on 29 October 2026. Domain ownership was already verified. No Search Console account or live report was accessed during this audit.

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash } from "node:crypto";
-import { site } from "@/config/site";
+import { inquiryConfig, inquiryOrigins } from "@/lib/inquiry-config";
 import { validateInquiry } from "@/lib/inquiry";
 export const runtime = "nodejs";
 const requests = new Map<string, { count: number; expires: number }>();
@@ -31,17 +31,20 @@ const error = (code: string, status: number) =>
   );
 export async function POST(request: NextRequest) {
   const origin = request.headers.get("origin");
-  const allowedOrigin = process.env.CONTACT_ALLOWED_ORIGIN || site.url;
+  const allowedOrigins = inquiryOrigins();
   if (
     !origin ||
-    (origin !== allowedOrigin &&
+    (!allowedOrigins.includes(origin) &&
       !(
         process.env.NODE_ENV === "development" &&
         origin === request.nextUrl.origin
       ))
   )
     return error("origin", 403);
-  if (!request.headers.get("content-type")?.startsWith("application/json"))
+  if (
+    request.headers.get("content-type")?.split(";")[0].trim().toLowerCase() !==
+    "application/json"
+  )
     return error("content_type", 415);
   if (Number(request.headers.get("content-length") || 0) > 16000)
     return error("size", 413);
@@ -78,13 +81,8 @@ export async function POST(request: NextRequest) {
     : "local";
   const key = createHash("sha256").update(ip).digest("hex");
   if (limited(key)) return error("rate_limit", 429);
-  if (
-    !process.env.RESEND_API_KEY ||
-    !process.env.CONTACT_FROM_EMAIL ||
-    !process.env.TURNSTILE_SECRET_KEY ||
-    !process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
-  )
-    return error("not_configured", 503);
+  const config = inquiryConfig();
+  if (!config.ready) return error("not_configured", 503);
   const { token, requestId } = parsed as Record<string, unknown>;
   if (
     typeof token !== "string" ||
@@ -103,7 +101,7 @@ export async function POST(request: NextRequest) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          secret: process.env.TURNSTILE_SECRET_KEY,
+          secret: config.secret,
           response: token,
         }),
         signal: AbortSignal.timeout(8000),
@@ -139,12 +137,12 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: {
         "Idempotency-Key": "inquiry/" + requestId,
-        Authorization: "Bearer " + process.env.RESEND_API_KEY,
+        Authorization: "Bearer " + config.apiKey,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: process.env.CONTACT_FROM_EMAIL,
-        to: [process.env.CONTACT_TO_EMAIL || site.email],
+        from: config.from,
+        to: [config.to],
         reply_to: data.email,
         subject: "Project inquiry: " + data.project,
         text,

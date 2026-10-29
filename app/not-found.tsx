@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { pick } from "@/config/site";
+
+export const metadata: Metadata = { robots: { index: false, follow: true } };
 
 export default async function NotFound() {
   const locale = (await headers()).get("x-studio-locale") === "en" ? "en" : "id";
