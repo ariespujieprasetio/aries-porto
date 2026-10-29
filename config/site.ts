@@ -6,7 +6,7 @@ export const pick = (locale: Locale, id: string, en: string) =>
   locale === "id" ? id : en;
 export const site = {
   name: "Aries Pujie Prasetio",
-  url: "https://ariespujieprasetio.my.id",
+  url: "https://www.ariespujieprasetio.my.id",
   email: "dev.ariespp@gmail.com",
   github: "https://github.com/ariespujieprasetio/",
   linkedin: "https://www.linkedin.com/in/ariespujieprasetio/",

@@ -1,3 +1,5 @@
+> Current canonical policy (2026-10-30): `site.url` in `config/site.ts` is https://www.ariespujieprasetio.my.id. Preserve apex-to-www redirects and root-to-/en. Earlier audit observations below are historical; do not reverse the host redirect. After deployment submit the www sitemap in Search Console and inspect its fetch result; the previous failure has no proven cause.
+
 # ARIES. portfolio / independent software studio
 
 ## Development
@@ -64,12 +66,12 @@ No vercel.json is needed for this standard Next.js app. In Vercel manually verif
 
 1. The custom apex domain points to the intended project and current Production deployment/commit, not an old project or Preview deployment.
 2. The production branch and Root Directory refer to this repository/app. Use the Next.js framework preset and default output; remove any stale dashboard build/output overrides.
-3. Inspect dashboard redirects/rewrites and upstream DNS/proxy rules. Configure www to redirect to the canonical apex and ensure both certificates are valid.
+3. Inspect dashboard redirects/rewrites and upstream DNS/proxy rules. Preserve apex redirects to the canonical www hostname and ensure both certificates are valid.
 4. Compare /, /id and /en on the deployment URL and custom domain. Root should return 308 to /en (preserving query parameters). Localized pages should return 200, with matching canonical, hreflang and HTML lang.
 5. Check response Location, Age, Cache-Control and x-vercel-cache headers. If the correct deployment URL works but the domain differs, inspect domain aliases/proxy caching. After identifying the cause, redeploy or invalidate the affected cache; avoid guessing that clearing cache fixes a routing mismatch.
 6. Retest in a fresh browser profile and inspect any previously installed service worker/site data. This repository registers no service worker.
 
-A follow-up production audit now reaches the site: apex redirects to www while canonical and sitemap URLs still point to apex. The live form receives an empty public Turnstile site key. See [the production-readiness report](docs/PRODUCTION_READINESS.md) for the confirmed findings and required configuration steps. No deployment or domain change was performed.
+The earlier production audit observed: apex redirects to www while canonical and sitemap URLs still point to apex. At that audit, the form received an empty public Turnstile site key. See [the production-readiness report](docs/PRODUCTION_READINESS.md) for the confirmed findings and required configuration steps. No deployment or domain change was performed.
 
 ## Technical SEO and Search Console
 

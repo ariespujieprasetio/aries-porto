@@ -44,11 +44,15 @@ export function inquiryOrigins() {
       url.hash
     )
       return [];
-    const origins = [url.origin];
-    if (url.origin === site.url) {
-      // Explicit first-party alias only, not arbitrary subdomains or Vercel previews.
-      origins.push("https://www." + new URL(site.url).hostname);
-    }
+    const canonical = new URL(site.url);
+    const apex = new URL(canonical.origin);
+    apex.hostname = canonical.hostname.replace(/^www\./, "");
+    // Accept both owned hosts even when an existing deployment still configures apex.
+    // Preview origins remain exact; never admit arbitrary subdomains.
+    const productionOrigins = [canonical.origin, apex.origin];
+    const origins = productionOrigins.includes(url.origin)
+      ? productionOrigins
+      : [url.origin];
     return origins;
   } catch {
     return [];

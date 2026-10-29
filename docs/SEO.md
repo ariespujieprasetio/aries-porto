@@ -1,3 +1,5 @@
+> Current canonical policy (2026-10-30): `site.url` in `config/site.ts` is https://www.ariespujieprasetio.my.id. Preserve apex-to-www redirects and root-to-/en. Earlier audit observations below are historical; do not reverse the host redirect. After deployment submit the www sitemap in Search Console and inspect its fetch result; the previous failure has no proven cause.
+
 # Technical SEO audit and Search Console runbook
 
 Audit date: 29 October 2026 (Asia/Jakarta). This report separates repository implementation, local production-mode testing, and observations from public hosts.
@@ -55,7 +57,7 @@ User-Agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://ariespujieprasetio.my.id/sitemap.xml
+Sitemap: https://www.ariespujieprasetio.my.id/sitemap.xml
 ```
 
 Public pages and essential assets remain crawlable. Robots exclusion is not an indexing-removal mechanism.
@@ -133,8 +135,8 @@ Temporary test scripts/screenshots were kept outside the repository. No live ema
 1. Review the changes, then deploy only after owner approval. Confirm the intended production branch, commit, project and Root Directory; use the Next.js preset and default output.
 2. Compare the current deployment URL with the custom domain. Verify the apex is assigned to the intended project and production deployment. Inspect deployment protection, firewall/bot rules, redirects and any upstream proxy/cache. Discovery endpoints must be public and must not receive login/challenge HTML.
 3. Compare current DNS resolution with the values Vercel shows for this project, including any AAAA record, without replacing the verification TXT. DNS/production changes require separate owner authorization; do not copy the diagnostic IPs above into DNS.
-4. Verify HTTP redirects to HTTPS and www redirects to the apex while preserving the path. Root should then lead to /en. Check certificates and redirect chains from an independent network. Test direct /id and /en, not only root.
-5. Check apex sitemap and robots responses with real GET requests: 200, XML/plain-text content, no challenge page, no redirect loop, no restrictive X-Robots-Tag. Confirm the XML contains the new deployment's canonical routes.
+4. Verify HTTP redirects to HTTPS and apex redirects to www while preserving the path. Root should then lead to /en. Check certificates and redirect chains from an independent network. Test direct /id and /en, not only root.
+5. Check www sitemap and robots responses with real GET requests: 200, XML/plain-text content, no challenge page, no redirect loop, no restrictive X-Robots-Tag. Confirm the XML contains the new deployment's canonical routes.
 6. Inspect the old `aries-porto-xyme.vercel.app` alias in Vercel. If it is an editable domain/alias on a project you control, configure a path-preserving permanent redirect to the primary domain using supported domain settings. Test representative paths and loops first.
 7. If that alias is an immutable deployment URL or belongs to another project, do not assume its redirect can be changed. Keep primary-domain canonical signals on editable deployments, avoid promoting old links, and inspect Google-selected canonicals. Do not apply a blanket redirect to every vercel.app hostname or block all previews to solve a single alias.
 8. Only invalidate a cache or change a redirect after identifying an actual mismatch. Re-test the primary URLs after deployment; successful local results cannot close the production incident.
@@ -142,9 +144,9 @@ Temporary test scripts/screenshots were kept outside the repository. No live ema
 Useful GET diagnostics (PowerShell/Windows; use `curl` on other systems):
 
 ```powershell
-curl.exe -sS -D - --max-time 20 https://ariespujieprasetio.my.id/sitemap.xml
-curl.exe -sS -D - --max-time 20 https://ariespujieprasetio.my.id/robots.txt
-curl.exe -sS -I --max-time 20 https://ariespujieprasetio.my.id/
+curl.exe -sS -D - --max-time 20 https://www.ariespujieprasetio.my.id/sitemap.xml
+curl.exe -sS -D - --max-time 20 https://www.ariespujieprasetio.my.id/robots.txt
+curl.exe -sS -I --max-time 20 https://www.ariespujieprasetio.my.id/
 curl.exe -sS -I --max-time 20 https://www.ariespujieprasetio.my.id/id
 ```
 
@@ -154,8 +156,8 @@ For local reproduction, run the three project checks, then `npm run start -- -p 
 
 1. Verify the deployed sitemap is publicly accessible; check it from an independent network as well as your browser.
 2. Open the **existing verified domain property** in Search Console. Do not create a replacement verification record.
-3. In Sitemaps, submit `https://ariespujieprasetio.my.id/sitemap.xml` (or `sitemap.xml` if the UI supplies that exact origin). Open the submission details and inspect fetch errors and last-read information.
-4. Use URL Inspection on `https://ariespujieprasetio.my.id/id`; run **Test Live URL**. Check fetch success, allowed crawling, rendered content and indexing eligibility.
+3. In Sitemaps, submit `https://www.ariespujieprasetio.my.id/sitemap.xml` (or `sitemap.xml` if the UI supplies that exact origin). Open the submission details and inspect fetch errors and last-read information.
+4. Use URL Inspection on `https://www.ariespujieprasetio.my.id/id`; run **Test Live URL**. Check fetch success, allowed crawling, rendered content and indexing eligibility.
 5. Request indexing if eligible. Repeat selectively for /en and key service/project URLs. A request does not guarantee indexing.
 6. Monitor the Pages indexing report and sitemap processing. Investigate error details if Couldn't fetch persists; do not declare success solely because a local browser receives XML.
 7. When indexed data becomes available, compare declared and Google-selected canonicals, particularly for old Vercel URLs.
@@ -171,3 +173,13 @@ The sitemap incident is resolved only when the deployed primary endpoint is acce
 - [Google: ProfilePage structured data](https://developers.google.com/search/docs/appearance/structured-data/profile-page)
 - [Next.js: Sitemap metadata API](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap)
 - [Vercel: Deploying and redirecting domains](https://vercel.com/docs/domains/working-with-domains/deploying-and-redirecting)
+
+## Canonical www verification (2026-10-30)
+
+- Canonical origin is centralized in `config/site.ts` (`site.url`). Sitemap, robots, metadataBase, canonical/hreflang, Open Graph and JSON-LD derive from it. All 22 localized entries are preserved.
+- Lint, standalone TypeScript check and production build passed. A first concurrent TypeScript check overlapped build type generation; rerunning after build passed.
+- Generated sitemap parsed with an XML parser: 22 www entries and www language alternates. Generated robots references the www sitemap.
+- Local production server: all 22 pages return 200 with matching canonical, hreflang, OG and JSON-LD; no old apex origin in rendered HTML. Root returns 308 to /en and preserves query parameters.
+- Live HTTP checks with redirects disabled: all 22 www destinations return 200; www sitemap returns 200 application/xml; www robots returns 200 text/plain. Apex /en redirects 308 to www /en; www root redirects 308 to /en. These checks verify existing destination availability, not deployment of this patch.
+- Inquiry origin regression checks pass for default, apex/www configuration, exact preview and invalid configuration.
+- No deployment, DNS or Vercel setting changes performed. After deploying, verify the live sitemap contents and metadata, then submit https://www.ariespujieprasetio.my.id/sitemap.xml in the matching Search Console property. Inspect last-read/fetch status and use URL Inspection on /en and /id; compare user-declared and Google-selected canonical when available. Host inconsistency is not a proven cause of the earlier fetch failure; no indexing success is claimed.

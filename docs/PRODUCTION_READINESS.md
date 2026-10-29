@@ -1,3 +1,5 @@
+> Current canonical policy (2026-10-30): `site.url` in `config/site.ts` is https://www.ariespujieprasetio.my.id. Preserve apex-to-www redirects and root-to-/en. Earlier audit observations below are historical; do not reverse the host redirect. After deployment submit the www sitemap in Search Console and inspect its fetch result; the previous failure has no proven cause.
+
 # Targeted production-readiness audit
 
 Follow-up audit: 29 October 2026. These live observations supersede the earlier connection-timeout observations in SEO.md. No deployment or domain settings were changed.
@@ -67,7 +69,7 @@ In the intended Vercel project's **Production** environment, configure:
 | NEXT_PUBLIC_TURNSTILE_SITE_KEY | Matching public widget key; currently empty in deployed output |
 
 Keep CONTACT_TO_EMAIL as the intended recipient (defaults to dev.ariespp@gmail.com).
-Keep CONTACT_ALLOWED_ORIGIN as `https://ariespujieprasetio.my.id`. This configuration now also accepts only its explicit www alias during transition. For a preview, set its exact origin; no wildcard Vercel-host allowance is added.
+Keep CONTACT_ALLOWED_ORIGIN as `https://www.ariespujieprasetio.my.id`. This configuration now also accepts only its explicit www alias during transition. For a preview, set its exact origin; no wildcard Vercel-host allowance is added.
 
 Allow the actual apex/www hostnames in the Turnstile widget settings. Set the public key before building and create a new deployment after approval; changing a variable does not update an already running deployment. Inspect Vercel server logs after opening Contact for the `[inquiry] Unavailable; missing configuration:` message if the fallback persists. It lists names only. Presence checks cannot establish that a key is valid or a sender domain is verified.
 
@@ -75,18 +77,10 @@ After deployment, send one authorized test inquiry to an inbox you control, insp
 
 ### 2. Align domain routing
 
-In Vercel's domain settings, after owner review:
-
-1. Set `ariespujieprasetio.my.id` to serve the intended production deployment instead of redirecting to www.
-2. Then configure `www.ariespujieprasetio.my.id` to permanently redirect to the apex, preserving path/query. Remove the current opposite redirect first to avoid a loop.
-3. Verify HTTPS/certificates and both locale routes. Expected apex root: 308 to /en; apex /id and /en: 200.
-4. Verify apex /sitemap.xml: 200/application/xml; apex /robots.txt: 200/text/plain. Sitemap loc URLs should then resolve directly to 200.
-5. Recheck canonical, hreflang and social URLs. Keep the existing Search Console verification TXT unchanged.
-
-Do not change the code's canonical hostname to www simply to mask the current dashboard mismatch; apex remains the selected primary domain.
+Preserve the existing apex-to-www redirect. No DNS or Vercel setting changes are needed for this hostname decision. Verify www /id and /en return 200, root redirects to /en, and www /sitemap.xml and /robots.txt return 200 with XML/text content types. Keep Search Console DNS verification unchanged.
 
 ### 3. Recheck discovery
 
-After deployment and domain repair, test the live apex URLs in Search Console, resubmit the sitemap if necessary, and monitor fetch/indexing reports. No indexing or ranking outcome is guaranteed.
+After deployment and domain repair, test the live www URLs in Search Console, resubmit the sitemap if necessary, and monitor fetch/indexing reports. No indexing or ranking outcome is guaranteed.
 
 References: [Next.js environment variables](https://nextjs.org/docs/app/guides/environment-variables), [Turnstile server validation](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/).
