@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import veritikBanner from "@/public/images/work/veritik/banner-veritik.png";
 import { type Locale, pick, site } from "@/config/site";
 import { projects } from "@/content/projects";
 import { CTA, Intro, ProjectVisual } from "./shared";
@@ -61,7 +63,39 @@ export function CaseStudy({ locale, slug }: { locale: Locale; slug: string }) {
         description={project.description}
       />
       <div className="shell case-visual">
-        <ProjectVisual slug={slug} name={project.name} locale={locale} />
+        {slug === "veritik" ? (
+          <figure className="product-demo">
+            <a
+              href={veritikBanner.src}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={pick(
+                locale,
+                "Buka visual demonstrasi Veritik ukuran penuh",
+                "Open the full-size Veritik demonstration visual",
+              )}
+            >
+              <Image
+                src={veritikBanner}
+                sizes="(max-width: 1280px) 92vw, 1200px"
+                alt={pick(
+                  locale,
+                  "Demonstrasi Veritik: peringkat kandidat, pipeline rekrutmen, dan perbandingan.",
+                  "Veritik demonstration: candidate ranking, recruitment pipeline, and comparison.",
+                )}
+              />
+            </a>
+            <figcaption>
+              {pick(
+                locale,
+                "Visual demonstrasi produk dari aset portofolio. Nama, skor, dan angka yang ditampilkan adalah data contoh, bukan hasil atau metrik pelanggan. Buka gambar untuk melihat detail.",
+                "Product demonstration visual from the portfolio assets. Names, scores, and figures shown are sample data, not customer outcomes or metrics. Open the image to inspect the details.",
+              )}
+            </figcaption>
+          </figure>
+        ) : (
+          <ProjectVisual slug={slug} name={project.name} locale={locale} />
+        )}
       </div>
       <section
         className="shell case-summary"

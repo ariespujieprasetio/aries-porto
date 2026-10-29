@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WebsitePackage } from "./website-package";
 import { type Locale, pick } from "@/config/site";
 import { services } from "@/content/services";
 import { CTA, Intro, SectionTitle } from "./shared";
@@ -42,6 +43,7 @@ export function ServicesPage({ locale }: { locale: Locale }) {
               <h2>{s.title}</h2>
               <p className="large-copy">{s.description}</p>
               <p>{s.features}</p>
+              {s.slug === "websites" && <WebsitePackage locale={locale} />}
               <div className="tags">
                 <span>{s.tech}</span>
               </div>

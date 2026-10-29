@@ -1,30 +1,59 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
-declare global {
-  interface Window {
-    va?: (event: string, payload: Record<string, unknown>) => void;
-  }
+import { Analytics, track, type BeforeSend } from "@vercel/analytics/react";
+
+const subscribe = () => () => {};
+function permitsAnalytics() {
+  return (
+    navigator.doNotTrack !== "1" &&
+    !(navigator as Navigator & { globalPrivacyControl?: boolean })
+      .globalPrivacyControl
+  );
 }
+const knownPath =
+  /^\/(id|en)(?:\/(?:services|about|experience|contact|resume|work(?:\/(?:velutara|veritik|enterprise|radiation-monitor))?))?\/?$/;
+const beforeSend: BeforeSend = (event) => {
+  if (!permitsAnalytics()) return null;
+  const url = new URL(event.url);
+  if (!knownPath.test(url.pathname)) return null;
+  url.search = "";
+  url.hash = "";
+  return { ...event, url: url.toString() };
+};
 export function AnalyticsEvents() {
   const path = usePathname();
+  const permitted = useSyncExternalStore(
+    subscribe,
+    permitsAnalytics,
+    () => false,
+  );
+  const enabled =
+    process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true" && permitted;
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_ANALYTICS_ENABLED !== "true") return;
-    if (/^\/(id|en)\/work\/[^/]+$/.test(path))
-      window.va?.("event", { name: "project_visit", data: { path } });
-    const click = (e: MouseEvent) => {
-      const el = (e.target as Element).closest?.("[data-event]");
-      const name = el?.getAttribute("data-event");
-      if (name) window.va?.("event", { name, data: { path } });
+    if (!enabled || !knownPath.test(path)) return;
+    const click = (event: MouseEvent) => {
+      if (!permitsAnalytics() || !(event.target instanceof Element)) return;
+      const name = event.target
+        .closest("[data-event]")
+        ?.getAttribute("data-event");
+      if (
+        name &&
+        ["contact_cta", "whatsapp_cta", "service_inquiry"].includes(name)
+      )
+        track(name, { path });
     };
-    const conversion = () =>
-      window.va?.("event", { name: "form_submission", data: { path } });
+    const conversion = () => {
+      if (permitsAnalytics()) track("inquiry_submitted", { path });
+    };
     document.addEventListener("click", click);
     window.addEventListener("studio:conversion", conversion);
     return () => {
       document.removeEventListener("click", click);
       window.removeEventListener("studio:conversion", conversion);
     };
-  }, [path]);
-  return null;
+  }, [enabled, path]);
+  return enabled ? (
+    <Analytics beforeSend={beforeSend} path={path} debug={false} />
+  ) : null;
 }

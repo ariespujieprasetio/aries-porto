@@ -47,9 +47,13 @@ export function validateInquiry(input: unknown): Inquiry | null {
     result[key] = value.trim();
   }
   if (
+    (obj.locale !== undefined && obj.locale !== "id" && obj.locale !== "en") ||
+    Object.entries(result).some(
+      ([key, value]) => key !== "description" && /[\x00-\x1f\x7f]/.test(value),
+    ) ||
     result.name.length < 1 ||
     /[\r\n]/.test(result.name) ||
-    !/^\S+@[^\s@]+\.[^\s@]+$/.test(result.email) ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(result.email) ||
     result.description.length < 20 ||
     !projectTypes.includes(result.project) ||
     !budgets.includes(result.budget)

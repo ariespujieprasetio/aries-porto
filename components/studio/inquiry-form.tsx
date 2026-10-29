@@ -1,24 +1,35 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 import { type Locale, pick, site } from "@/config/site";
+import { SpamChallenge } from "./spam-challenge";
 import { projectTypes, validateInquiry } from "@/lib/inquiry";
+
+const subscribe = () => () => {};
 
 export function InquiryForm({
   locale,
   configured,
   initialService,
+  siteKey,
 }: {
   locale: Locale;
   configured: boolean;
   initialService?: string;
+  siteKey: string;
 }) {
-  const [state, setState] = useState<
-    "idle" | "sending" | "success" | "error" | "draft"
-  >("idle");
+  const hydrated = useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
+  const [state, setState] = useState<"idle" | "sending" | "success" | "error">(
+    "idle",
+  );
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [draft, setDraft] = useState("");
-  const [copied, setCopied] = useState(false);
+  const [token, setToken] = useState("");
+  const [challengeVersion, setChallengeVersion] = useState(0);
+  const attempt = useRef({ fingerprint: "", id: "" });
   const status = useRef<HTMLDivElement>(null);
   const busy = useRef(false);
   const typeLabels =
@@ -65,20 +76,11 @@ export function InquiryForm({
           "Rp25–50 million",
           "Above Rp50 million",
         ];
-  const emailHref =
-    "mailto:" +
-    site.email +
-    "?subject=" +
-    encodeURIComponent(
-      pick(locale, "Konsultasi proyek — ARIES.", "Project inquiry — ARIES."),
-    ) +
-    "&body=" +
-    encodeURIComponent(draft);
   const announce = () => requestAnimationFrame(() => status.current?.focus());
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (busy.current) return;
+    if (busy.current || !configured) return;
     const form = event.currentTarget;
     const payload = Object.fromEntries(new FormData(form));
     const fieldErrors: Record<string, string> = {};
@@ -136,48 +138,21 @@ export function InquiryForm({
       announce();
       return;
     }
-    if (!configured) {
-      const summary = [
-        pick(
-          locale,
-          "Halo Aries, saya ingin mendiskusikan proyek berikut.",
-          "Hi Aries, I would like to discuss the following project.",
-        ),
-        "",
-        pick(locale, "Nama: ", "Name: ") + data.name,
-        "Email: " + data.email,
-        pick(locale, "Jenis proyek: ", "Project type: ") +
-          typeLabels[projectTypes.indexOf(data.project)],
-        ...(data.company
-          ? [pick(locale, "Perusahaan: ", "Company: ") + data.company]
-          : []),
-        ...(data.phone
-          ? [pick(locale, "Kontak: ", "Contact: ") + data.phone]
-          : []),
-        ...(data.budget
-          ? [
-              pick(locale, "Anggaran: ", "Budget: ") +
-                budgetLabels[budgetValues.indexOf(data.budget)],
-            ]
-          : []),
-        ...(data.timeline
-          ? [pick(locale, "Target waktu: ", "Timeline: ") + data.timeline]
-          : []),
-        "",
-        data.description,
-      ].join("\n");
-      setDraft(summary);
-      setCopied(false);
-      setState("draft");
+    if (!token) {
+      setState("error");
       setMessage(
         pick(
           locale,
-          "Draf siap. Buka aplikasi email atau salin ringkasan di bawah. Pesan belum dikirim.",
-          "Your draft is ready. Open your email app or copy the brief below. Nothing has been sent.",
+          "Selesaikan verifikasi keamanan sebelum mengirim.",
+          "Complete the security check before sending.",
         ),
       );
       announce();
       return;
+    }
+    const fingerprint = JSON.stringify(data);
+    if (attempt.current.fingerprint !== fingerprint) {
+      attempt.current = { fingerprint, id: crypto.randomUUID() };
     }
     busy.current = true;
     setState("sending");
@@ -186,11 +161,15 @@ export function InquiryForm({
       const response = await fetch("/api/inquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, locale }),
-        signal: AbortSignal.timeout(15000),
+        body: JSON.stringify({ ...data, token, requestId: attempt.current.id }),
+        signal: AbortSignal.timeout(25000),
       });
       const result = await response.json();
-      if (!response.ok || result.ok !== true) {
+      if (
+        !response.ok ||
+        result.ok !== true ||
+        result.delivery !== "accepted"
+      ) {
         setState("error");
         setMessage(
           result.code === "rate_limit"
@@ -201,8 +180,8 @@ export function InquiryForm({
               )
             : pick(
                 locale,
-                "Pesan belum terkirim. Isian Anda tetap tersimpan di halaman ini. Coba lagi atau hubungi saya melalui email.",
-                "Your message was not sent. Your answers are still here. Try again or email me directly.",
+                "Pengiriman belum dapat dikonfirmasi. Isian Anda tetap tersedia. Ulangi verifikasi keamanan lalu coba lagi, atau hubungi saya melalui email.",
+                "Delivery could not be confirmed. Your answers are still here. Complete the security check again and retry, or email me directly.",
               ),
         );
       } else {
@@ -215,6 +194,7 @@ export function InquiryForm({
           ),
         );
         form.reset();
+        attempt.current = { fingerprint: "", id: "" };
         window.dispatchEvent(new CustomEvent("studio:conversion"));
       }
     } catch {
@@ -228,6 +208,8 @@ export function InquiryForm({
       );
     } finally {
       busy.current = false;
+      setToken("");
+      setChallengeVersion((v) => v + 1);
       announce();
     }
   }
@@ -272,6 +254,8 @@ export function InquiryForm({
     <form
       className="inquiry-form"
       onSubmit={submit}
+      method="post"
+      action="/api/inquiry"
       noValidate
       aria-busy={state === "sending"}
     >
@@ -295,154 +279,190 @@ export function InquiryForm({
               )
             : pick(
                 locale,
-                "Formulir ini menyiapkan draf email. Anda meninjau dan mengirimnya melalui aplikasi email Anda. * Wajib diisi.",
-                "This form prepares an email draft. You review and send it from your email app. * Required fields.",
+                "Formulir sedang tidak tersedia. Silakan hubungi saya melalui email atau WhatsApp.",
+                "The inquiry form is currently unavailable. Please contact me by email or WhatsApp.",
               )}
         </p>
       </div>
-      <fieldset disabled={state === "sending"}>
-        <legend className="sr-only">
-          {pick(locale, "Detail proyek", "Project details")}
-        </legend>
-        <div className="form-grid">
-          {input(
-            "name",
-            pick(locale, "Nama lengkap", "Full name"),
-            "text",
-            true,
-          )}
-          {input("email", "Email", "email", true, 254)}
-        </div>
-        <label htmlFor="inquiry-project">
-          {pick(locale, "Jenis proyek", "Project type")} *
-          <select
-            id="inquiry-project"
-            name="project"
-            required
-            defaultValue={
-              projectTypes.includes(initialService ?? "") ? initialService : ""
-            }
-            aria-invalid={!!errors.project}
-            aria-describedby={errors.project ? "project-error" : undefined}
-          >
-            <option value="" disabled>
-              {pick(locale, "Pilih jenis proyek", "Select a project type")}
-            </option>
-            {projectTypes.map((v, i) => (
-              <option value={v} key={v}>
-                {typeLabels[i]}
-              </option>
-            ))}
-          </select>
-          {errors.project && (
-            <span className="field-error" id="project-error">
-              {errors.project}
-            </span>
-          )}
-        </label>
-        <label htmlFor="inquiry-description">
-          {pick(
-            locale,
-            "Apa yang ingin Anda bangun?",
-            "What would you like to build?",
-          )}{" "}
-          *
-          <textarea
-            id="inquiry-description"
-            name="description"
-            required
-            minLength={20}
-            maxLength={5000}
-            rows={5}
-            aria-invalid={!!errors.description}
-            aria-describedby={
-              "description-hint" +
-              (errors.description ? " description-error" : "")
-            }
-            placeholder={pick(
-              locale,
-              "Ceritakan tujuan, kendala, dan siapa yang akan menggunakan aplikasinya.",
-              "Share the goal, the challenge, and who will use it.",
-            )}
-          />
-          <small id="description-hint">
+      {!configured && (
+        <a
+          className="text-link"
+          data-event="contact_cta"
+          href={"mailto:" + site.email}
+        >
+          {site.email}
+        </a>
+      )}
+      {configured && (
+        <noscript>
+          <p className="form-note">
             {pick(
               locale,
-              "20–5.000 karakter. Jangan sertakan informasi rahasia.",
-              "20–5,000 characters. Please omit confidential information.",
+              "Formulir aman ini memerlukan JavaScript. Gunakan tautan email atau WhatsApp untuk menghubungi saya.",
+              "JavaScript is required for the secure form. Please use the email or WhatsApp links instead.",
             )}
-          </small>
-          {errors.description && (
-            <span className="field-error" id="description-error">
-              {errors.description}
-            </span>
-          )}
-        </label>
-        <details className="optional-fields">
-          <summary>
-            {pick(
-              locale,
-              "Tambahkan konteks (opsional)",
-              "Add more context (optional)",
-            )}{" "}
-            <span aria-hidden="true">+</span>
-          </summary>
+          </p>
+        </noscript>
+      )}
+      {configured && (
+        <fieldset disabled={!hydrated || state === "sending"}>
+          <legend className="sr-only">
+            {pick(locale, "Detail proyek", "Project details")}
+          </legend>
           <div className="form-grid">
             {input(
-              "company",
-              pick(locale, "Bisnis / perusahaan", "Business / company"),
+              "name",
+              pick(locale, "Nama lengkap", "Full name"),
+              "text",
+              true,
             )}
-            {input(
-              "phone",
-              pick(locale, "Nomor kontak", "Contact number"),
-              "tel",
-              false,
-              40,
-            )}
-            <label htmlFor="inquiry-budget">
-              {pick(locale, "Perkiraan anggaran", "Estimated budget")}
-              <select id="inquiry-budget" name="budget" defaultValue="">
-                {budgetValues.map((v, i) => (
-                  <option value={v} key={v}>
-                    {budgetLabels[i]}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {input(
-              "timeline",
-              pick(locale, "Target waktu", "Desired timeline"),
-            )}
+            {input("email", "Email", "email", true, 254)}
           </div>
-        </details>
-        <div className="honeypot" aria-hidden="true">
-          <label>
-            Website
-            <input name="website" tabIndex={-1} autoComplete="off" />
-          </label>
-        </div>
-        <p className="form-note">
-          {pick(
-            locale,
-            "Informasi Anda hanya digunakan untuk menanggapi kebutuhan proyek ini.",
-            "Your information is used only to respond to this project inquiry.",
-          )}{" "}
-          {configured &&
-            pick(
-              locale,
-              "Pesan dikirim melalui penyedia layanan email.",
-              "Messages pass through an email provider.",
+          <label htmlFor="inquiry-project">
+            {pick(locale, "Jenis proyek", "Project type")} *
+            <select
+              id="inquiry-project"
+              name="project"
+              required
+              defaultValue={
+                projectTypes.includes(initialService ?? "")
+                  ? initialService
+                  : ""
+              }
+              aria-invalid={!!errors.project}
+              aria-describedby={errors.project ? "project-error" : undefined}
+            >
+              <option value="" disabled>
+                {pick(locale, "Pilih jenis proyek", "Select a project type")}
+              </option>
+              {projectTypes.map((v, i) => (
+                <option value={v} key={v}>
+                  {typeLabels[i]}
+                </option>
+              ))}
+            </select>
+            {errors.project && (
+              <span className="field-error" id="project-error">
+                {errors.project}
+              </span>
             )}
-        </p>
-        <button className="button" type="submit" disabled={state === "sending"}>
-          {state === "sending"
-            ? pick(locale, "Mengirim…", "Sending…")
-            : configured
-              ? pick(locale, "Kirim kebutuhan proyek", "Send project inquiry")
-              : pick(locale, "Siapkan draf email", "Prepare email draft")}{" "}
-          <span aria-hidden="true">↗︎</span>
-        </button>
-      </fieldset>
+          </label>
+          <label htmlFor="inquiry-description">
+            {pick(
+              locale,
+              "Apa yang ingin Anda bangun?",
+              "What would you like to build?",
+            )}{" "}
+            *
+            <textarea
+              id="inquiry-description"
+              name="description"
+              required
+              minLength={20}
+              maxLength={5000}
+              rows={5}
+              aria-invalid={!!errors.description}
+              aria-describedby={
+                "description-hint" +
+                (errors.description ? " description-error" : "")
+              }
+              placeholder={pick(
+                locale,
+                "Ceritakan tujuan, kendala, dan siapa yang akan menggunakan aplikasinya.",
+                "Share the goal, the challenge, and who will use it.",
+              )}
+            />
+            <small id="description-hint">
+              {pick(
+                locale,
+                "20–5.000 karakter. Jangan sertakan informasi rahasia.",
+                "20–5,000 characters. Please omit confidential information.",
+              )}
+            </small>
+            {errors.description && (
+              <span className="field-error" id="description-error">
+                {errors.description}
+              </span>
+            )}
+          </label>
+          <details className="optional-fields">
+            <summary>
+              {pick(
+                locale,
+                "Tambahkan konteks (opsional)",
+                "Add more context (optional)",
+              )}{" "}
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div className="form-grid">
+              {input(
+                "company",
+                pick(locale, "Bisnis / perusahaan", "Business / company"),
+              )}
+              {input(
+                "phone",
+                pick(locale, "Nomor kontak", "Contact number"),
+                "tel",
+                false,
+                40,
+              )}
+              <label htmlFor="inquiry-budget">
+                {pick(locale, "Perkiraan anggaran", "Estimated budget")}
+                <select id="inquiry-budget" name="budget" defaultValue="">
+                  {budgetValues.map((v, i) => (
+                    <option value={v} key={v}>
+                      {budgetLabels[i]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {input(
+                "timeline",
+                pick(locale, "Target waktu", "Desired timeline"),
+              )}
+            </div>
+          </details>
+          <div className="honeypot" aria-hidden="true">
+            <label>
+              Website
+              <input name="website" tabIndex={-1} autoComplete="off" />
+            </label>
+          </div>
+          <SpamChallenge
+            key={challengeVersion}
+            locale={locale}
+            siteKey={siteKey}
+            onToken={setToken}
+          />
+          <p className="form-note">
+            {pick(
+              locale,
+              "Informasi Anda hanya digunakan untuk menanggapi kebutuhan proyek ini.",
+              "Your information is used only to respond to this project inquiry.",
+            )}{" "}
+            {configured &&
+              pick(
+                locale,
+                "Pengiriman menggunakan Resend; verifikasi spam menggunakan Cloudflare Turnstile.",
+                "Delivery uses Resend; spam verification uses Cloudflare Turnstile.",
+              )}
+          </p>
+          <button
+            className="button"
+            type="submit"
+            disabled={state === "sending"}
+          >
+            {state === "sending"
+              ? pick(locale, "Mengirim…", "Sending…")
+              : pick(
+                  locale,
+                  "Kirim kebutuhan proyek",
+                  "Send project inquiry",
+                )}{" "}
+            <span aria-hidden="true">↗︎</span>
+          </button>
+        </fieldset>
+      )}
       <div
         ref={status}
         tabIndex={-1}
@@ -451,49 +471,6 @@ export function InquiryForm({
       >
         {message}
       </div>
-      {state === "draft" && (
-        <div className="draft-preview">
-          <label htmlFor="email-draft">
-            {pick(locale, "Ringkasan untuk email", "Your email brief")}
-            <textarea id="email-draft" value={draft} readOnly rows={6} />
-          </label>
-          <div className="actions">
-            <a className="button" href={emailHref}>
-              {pick(locale, "Buka aplikasi email", "Open email app")} ↗︎
-            </a>
-            <button
-              className="text-link"
-              type="button"
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(draft);
-                  setCopied(true);
-                } catch {
-                  setMessage(
-                    pick(
-                      locale,
-                      "Pilih dan salin ringkasan secara manual.",
-                      "Select and copy the brief manually.",
-                    ),
-                  );
-                }
-              }}
-            >
-              {copied
-                ? pick(locale, "Tersalin", "Copied")
-                : pick(locale, "Salin ringkasan", "Copy brief")}
-            </button>
-          </div>
-          <p className="form-note">
-            {pick(
-              locale,
-              "Jika aplikasi email tidak terbuka, salin ringkasan dan kirim ke ",
-              "If your email app does not open, copy the brief and send it to ",
-            )}
-            <a href={"mailto:" + site.email}>{site.email}</a>.
-          </p>
-        </div>
-      )}
     </form>
   );
 }

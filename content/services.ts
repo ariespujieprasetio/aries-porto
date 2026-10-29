@@ -17,8 +17,8 @@ export function services(locale: Locale) {
       ),
       features: pick(
         locale,
-        "Desain responsif, formulir kontak, dasar SEO, serta pilihan CMS, WhatsApp, dan integrasi analitik sesuai kebutuhan.",
-        "Responsive design, contact forms, SEO foundations, and optional CMS, WhatsApp, and analytics integrations.",
+        "Paket awal: company profile hingga 3 halaman, 1 bahasa, 1 putaran revisi, dan konten dari klien. CMS, formulir server, dan integrasi ditawarkan terpisah.",
+        "Starting package: a company profile of up to 3 pages, 1 language, 1 revision round, and client-supplied content. CMS, server-delivered forms, and integrations are quoted separately.",
       ),
       tech: "Next.js \u00b7 React \u00b7 CMS",
       price:

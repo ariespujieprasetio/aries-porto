@@ -33,12 +33,12 @@ export async function POST(request: NextRequest) {
   const origin = request.headers.get("origin");
   const allowedOrigin = process.env.CONTACT_ALLOWED_ORIGIN || site.url;
   if (
-    origin &&
-    origin !== allowedOrigin &&
-    !(
-      process.env.NODE_ENV === "development" &&
-      origin === request.nextUrl.origin
-    )
+    !origin ||
+    (origin !== allowedOrigin &&
+      !(
+        process.env.NODE_ENV === "development" &&
+        origin === request.nextUrl.origin
+      ))
   )
     return error("origin", 403);
   if (!request.headers.get("content-type")?.startsWith("application/json"))
@@ -78,8 +78,48 @@ export async function POST(request: NextRequest) {
     : "local";
   const key = createHash("sha256").update(ip).digest("hex");
   if (limited(key)) return error("rate_limit", 429);
-  if (!process.env.RESEND_API_KEY || !process.env.CONTACT_FROM_EMAIL)
+  if (
+    !process.env.RESEND_API_KEY ||
+    !process.env.CONTACT_FROM_EMAIL ||
+    !process.env.TURNSTILE_SECRET_KEY ||
+    !process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+  )
     return error("not_configured", 503);
+  const { token, requestId } = parsed as Record<string, unknown>;
+  if (
+    typeof token !== "string" ||
+    !token ||
+    token.length > 2048 ||
+    typeof requestId !== "string" ||
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      requestId,
+    )
+  )
+    return error("validation", 400);
+  try {
+    const verification = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          secret: process.env.TURNSTILE_SECRET_KEY,
+          response: token,
+        }),
+        signal: AbortSignal.timeout(8000),
+      },
+    );
+    if (!verification.ok) return error("verification_unavailable", 503);
+    const result = await verification.json();
+    if (
+      result.success !== true ||
+      result.action !== "project_inquiry" ||
+      result.hostname !== new URL(origin!).hostname
+    )
+      return error("verification", 400);
+  } catch {
+    return error("verification_unavailable", 503);
+  }
   const text = [
     "New project inquiry - ARIES.",
     "Name: " + data.name,
@@ -98,6 +138,7 @@ export async function POST(request: NextRequest) {
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
+        "Idempotency-Key": "inquiry/" + requestId,
         Authorization: "Bearer " + process.env.RESEND_API_KEY,
         "Content-Type": "application/json",
       },
@@ -112,9 +153,10 @@ export async function POST(request: NextRequest) {
     });
     if (!response.ok) return error("delivery", 502);
     const result = await response.json();
-    if (typeof result.id !== "string") return error("delivery", 502);
+    if (typeof result.id !== "string" || !result.id.trim())
+      return error("delivery", 502);
     return NextResponse.json(
-      { ok: true },
+      { ok: true, delivery: "accepted" },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch {

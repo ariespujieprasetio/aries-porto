@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
-import Script from "next/script";
 import localFont from "next/font/local";
 const manrope = localFont({
   src: "./fonts/manrope-latin.woff2",
@@ -11,6 +10,7 @@ const manrope = localFont({
 import "@/app/globals.css";
 import { site } from "@/config/site";
 export const metadata: Metadata = {
+  referrer: "strict-origin",
   metadataBase: new URL(site.url),
   title: {
     default: "ARIES. — Independent Software Studio",
@@ -30,15 +30,7 @@ export default async function RootLayout({
     (await headers()).get("x-studio-locale") === "en" ? "en" : "id";
   return (
     <html lang={locale}>
-      <body className={manrope.variable}>
-        {children}
-        {process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true" && (
-          <Script
-            src="/_vercel/insights/script.js"
-            strategy="afterInteractive"
-          />
-        )}
-      </body>
+      <body className={manrope.variable}>{children}</body>
     </html>
   );
 }

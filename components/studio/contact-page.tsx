@@ -87,8 +87,14 @@ export function ContactPage({
         <InquiryForm
           locale={locale}
           initialService={initialService}
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
           configured={
-            !!(process.env.RESEND_API_KEY && process.env.CONTACT_FROM_EMAIL)
+            !!(
+              process.env.RESEND_API_KEY &&
+              process.env.CONTACT_FROM_EMAIL &&
+              process.env.TURNSTILE_SECRET_KEY &&
+              process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+            )
           }
         />
       </section>
