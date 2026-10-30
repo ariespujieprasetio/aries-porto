@@ -1,5 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
+import warungkuWebsite from "@/public/images/work/warungku/website.webp";
+import larasatiWebsite from "@/public/images/work/hotel-larasati/website.webp";
+import motorkuxWebsite from "@/public/images/work/motorkux/website.webp";
+import astraReferralWebsite from "@/public/images/work/astra-referral/website.webp";
+import heartWebsite from "@/public/images/work/heart/website.webp";
+import gotjobWebsite from "@/public/images/work/gotjob/website.webp";
 import veritikWebsite from "@/public/images/work/veritik/website.webp";
 import velutaraWebsite from "@/public/images/work/velutara/website.webp";
 import veritikBanner from "@/public/images/work/veritik/banner-veritik.png";
@@ -9,6 +15,7 @@ import { CTA, Intro, ProjectVisual } from "./shared";
 
 export function CaseStudy({ locale, slug }: { locale: Locale; slug: string }) {
   const project = projects(locale).find((p) => p.slug === slug)!;
+  const website = ({ veritik: veritikWebsite, velutara: velutaraWebsite, gotjob: gotjobWebsite, heart: heartWebsite, "astra-referral": astraReferralWebsite, motorkux: motorkuxWebsite, "hotel-larasati": larasatiWebsite } as const)[slug as "veritik" | "velutara" | "gotjob" | "heart" | "astra-referral" | "motorkux" | "hotel-larasati"];
   const sections = [
     {
       id: "context",
@@ -99,18 +106,43 @@ export function CaseStudy({ locale, slug }: { locale: Locale; slug: string }) {
           <ProjectVisual slug={slug} name={project.name} locale={locale} />
         )}
       </div>
-      {project.url && (slug === "veritik" || slug === "velutara") && (
+      {slug === "astra-property-sales" && (
+        <div className="shell">
+          <p className="engineering-note">
+            {pick(locale,
+              "Aplikasi internal Astra Property. Screenshot dan tautan akses tidak dipublikasikan. Visual di atas merupakan ilustrasi alur, bukan tampilan aplikasi.",
+              "Internal Astra Property application. Screenshots and access links are not published. The visual above illustrates the workflow; it is not an application screen.")}
+          </p>
+        </div>
+      )}
+      {slug === "warungku" && (
+        <div className="shell">
+          <figure className="product-demo">
+            <Image
+              src={warungkuWebsite}
+              sizes="(max-width: 1280px) 92vw, 1200px"
+              alt={pick(locale, "Tangkapan layar halaman publik WarungKu POS dengan pratinjau ringkasan operasional", "WarungKu POS public page screenshot with an operational summary preview")}
+            />
+            <figcaption>
+              {pick(locale,
+                "Pratinjau WarungKu POS, diambil 30 Oktober 2026. Produk masih dalam pengembangan. Angka pada pratinjau merupakan tampilan demo, bukan metrik pelanggan yang diverifikasi.",
+                "WarungKu POS preview captured on October 30, 2026. The product is in development. Figures in the preview are demo content, not verified customer metrics.")}
+            </figcaption>
+          </figure>
+        </div>
+      )}
+      {project.url && website && (
         <div className="shell"><figure className="product-demo">
           <a href={project.url} target="_blank" rel="noopener noreferrer"
             aria-label={pick(locale, "Kunjungi website ", "Visit website: ") + project.name}>
-            <Image src={slug === "veritik" ? veritikWebsite : velutaraWebsite}
+            <Image src={website}
               sizes="(max-width: 1280px) 92vw, 1200px"
-              alt={pick(locale, "Tangkapan layar halaman utama ", "Homepage screenshot of ") + project.name} />
+              alt={(slug === "hotel-larasati" ? pick(locale, "Halaman login staf ", "Staff login page for ") : slug === "astra-referral" ? pick(locale, "Halaman login portal referral ", "Referral portal login page for ") : slug === "heart" ? pick(locale, "Halaman login employee self-service ", "Employee self-service login page for ") : pick(locale, "Tangkapan layar halaman utama ", "Homepage screenshot of ")) + project.name} />
           </a>
           <figcaption>
-            {pick(locale, "Halaman publik, diambil 30 Oktober 2026. Konten demo dan klaim pemasaran dalam gambar berasal dari situs tersebut, bukan metrik hasil proyek yang diverifikasi. ", "Public homepage captured on October 30, 2026. Demo content and marketing claims in the image belong to the site; they are not verified project outcome metrics. ")}
+            {slug === "hotel-larasati" ? pick(locale, "Halaman login staf Hotel Larasati, diambil 30 Oktober 2026. Data tamu dan layar operasional memerlukan autentikasi dan tidak ditampilkan. ", "Hotel Larasati staff login page captured on October 30, 2026. Guest data and operational screens require authentication and are not shown. ") : slug === "motorkux" ? pick(locale, "Storefront publik MotorkuX, diambil 30 Oktober 2026. Harga dan promosi mengikuti tampilan situs saat pengambilan. CMS internal tidak ditampilkan. ", "Public MotorkuX storefront captured on October 30, 2026. Prices and promotions reflect the site at capture time. The internal CMS is not shown. ") : slug === "astra-referral" ? pick(locale, "Halaman login publik Astra Property Referral, diambil 30 Oktober 2026. Layar referral, progres pembelian, dan klaim bonus memerlukan autentikasi dan tidak ditampilkan. ", "Public Astra Property Referral login page captured on October 30, 2026. Referral, purchase progress, and bonus claim screens require authentication and are not shown. ") : slug === "heart" ? pick(locale, "Halaman login publik HEART, diambil 30 Oktober 2026. Layar absensi, slip gaji, bukti potong, dan cuti memerlukan autentikasi dan tidak ditampilkan. ", "Public HEART login page captured on October 30, 2026. Attendance, payslips, tax certificates, and leave screens require authentication and are not shown. ") : pick(locale, "Halaman publik, diambil 30 Oktober 2026. Konten demo dan klaim pemasaran dalam gambar berasal dari situs tersebut, bukan metrik hasil proyek yang diverifikasi. ", "Public homepage captured on October 30, 2026. Demo content and marketing claims in the image belong to the site; they are not verified project outcome metrics. ")}
             <a className="text-link" href={project.url} target="_blank" rel="noopener noreferrer">
-              {pick(locale, "Kunjungi website", "Visit website")} {new URL(project.url).hostname}
+              {project.urlLabel ?? pick(locale, "Kunjungi website", "Visit website")} {new URL(project.url).hostname}
             </a>
           </figcaption>
         </figure></div>
@@ -164,7 +196,7 @@ export function CaseStudy({ locale, slug }: { locale: Locale; slug: string }) {
                 target="_blank"
                 rel="noreferrer"
               >
-                {pick(locale, "Kunjungi website", "Visit website")} ↗︎
+                {project.urlLabel ?? pick(locale, "Kunjungi website", "Visit website")} ↗︎
               </a>
             )}
           </div>

@@ -248,6 +248,40 @@ export function ProjectVisual({
               ? locale === "id"
                 ? ["Resume", "Evaluasi", "Perbandingan"]
                 : ["Resumes", "Evaluation", "Comparison"]
+              : slug === "gotjob"
+                ? locale === "id"
+                  ? ["Lowongan", "Kandidat", "CMS"]
+                  : ["Jobs", "Candidates", "CMS"]
+              : slug === "heart"
+                ? locale === "id"
+                  ? ["Absensi", "Layanan", "Odoo"]
+                  : ["Attendance", "Services", "Odoo"]
+              : slug === "astra-referral"
+                ? locale === "id"
+                  ? ["Referral", "Progres", "Klaim"]
+                  : ["Referral", "Progress", "Claims"]
+              : slug === "motorkux"
+                ? ["Storefront", "Next.js", "CMS"]
+              : slug === "astra-property-sales"
+                ? locale === "id"
+                  ? ["Leads", "Penjualan", "Handover"]
+                  : ["Leads", "Sales", "Handover"]
+              : slug === "cermat"
+                ? locale === "id"
+                  ? ["Keuangan", "Aset", "Analisis"]
+                  : ["Finance", "Assets", "Analysis"]
+              : slug === "odoo-helpdesk"
+                ? ["Odoo 15", "Helpdesk", "Support"]
+              : slug === "realtime-dashboard"
+                ? ["Odoo", "NestJS", "ReactJS"]
+              : slug === "hotel-larasati"
+                ? locale === "id"
+                  ? ["Staf", "Workspace", "Operasional"]
+                  : ["Staff", "Workspace", "Operations"]
+              : slug === "warungku"
+                ? locale === "id"
+                  ? ["Kasir", "Stok", "Ringkasan"]
+                  : ["POS", "Stock", "Summary"]
               : slug === "enterprise"
                 ? ["Web", "API", "Mobile"]
                 : locale === "id"
@@ -313,7 +347,7 @@ export function ProjectCards({
               <p>{project.description}</p>
               {project.url && (
                 <a className="text-link" href={project.url} target="_blank" rel="noopener noreferrer">
-                  {pick(locale, "Kunjungi website", "Visit website")} {new URL(project.url).hostname}
+                  {project.urlLabel ?? pick(locale, "Kunjungi website", "Visit website")} {new URL(project.url).hostname}
                 </a>
               )}
               <div className="tags">
