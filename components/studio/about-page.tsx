@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import presentationPhoto from "@/public/images/achievements/inovy-2023-presentation.webp";
 import { type Locale, pick } from "@/config/site";
 import { capabilities } from "@/data/capabilities";
 import { CTA, Intro, SectionTitle } from "./shared";
@@ -24,10 +26,12 @@ export function AboutPage({ locale }: { locale: Locale }) {
         )}
       />
       <section className="section shell story-grid">
-        <div className="monogram-panel" aria-hidden="true">
-          <span>ARIES.</span>
-          <strong>AP</strong>
-          <small>ENGINEER / BUILDER / INDEPENDENT</small>
+        <div className="about-portrait">
+          <Image
+            src={presentationPhoto}
+            alt={pick(locale, "Aries Pujie Prasetio sedang mempresentasikan proyek dalam INOVY Competition 2023", "Aries Pujie Prasetio presenting a project at INOVY Competition 2023")}
+            sizes="(max-width: 760px) 92vw, (max-width: 1280px) 40vw, 520px"
+          />
         </div>
         <div>
           <p className="eyebrow">

@@ -1,5 +1,6 @@
 import { type Locale, pick } from "@/config/site";
 import { certifications } from "@/data/certifications";
+import { AchievementGallery } from "./achievement-gallery";
 import { achievements } from "@/data/achievements";
 export function Credentials({ locale }: { locale: Locale }) {
   return (
@@ -43,11 +44,13 @@ export function Credentials({ locale }: { locale: Locale }) {
           <div key={a.title}>
             <strong>{a.title}</strong>
             <p>
-              {a.organization} · {a.year}
+              {a.organization} · {a.month === "12" ? pick(locale, "Desember ", "December ") : ""}{a.year}
             </p>
+            {a.project && <p>{pick(locale, "Proyek: ", "Project: ")}{a.project}</p>}
           </div>
         ))}
       </div>
+      <AchievementGallery locale={locale} />
     </>
   );
 }
