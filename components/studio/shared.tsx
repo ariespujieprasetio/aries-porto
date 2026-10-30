@@ -311,6 +311,11 @@ export function ProjectCards({
                 </Link>
               </h3>
               <p>{project.description}</p>
+              {project.url && (
+                <a className="text-link" href={project.url} target="_blank" rel="noopener noreferrer">
+                  {pick(locale, "Kunjungi website", "Visit website")} {new URL(project.url).hostname}
+                </a>
+              )}
               <div className="tags">
                 {project.tags.map((tag) => (
                   <span key={tag}>{tag}</span>

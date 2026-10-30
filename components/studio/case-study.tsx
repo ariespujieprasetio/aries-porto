@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import veritikWebsite from "@/public/images/work/veritik/website.webp";
+import velutaraWebsite from "@/public/images/work/velutara/website.webp";
 import veritikBanner from "@/public/images/work/veritik/banner-veritik.png";
 import { type Locale, pick, site } from "@/config/site";
 import { projects } from "@/content/projects";
@@ -97,6 +99,22 @@ export function CaseStudy({ locale, slug }: { locale: Locale; slug: string }) {
           <ProjectVisual slug={slug} name={project.name} locale={locale} />
         )}
       </div>
+      {project.url && (slug === "veritik" || slug === "velutara") && (
+        <div className="shell"><figure className="product-demo">
+          <a href={project.url} target="_blank" rel="noopener noreferrer"
+            aria-label={pick(locale, "Kunjungi website ", "Visit website: ") + project.name}>
+            <Image src={slug === "veritik" ? veritikWebsite : velutaraWebsite}
+              sizes="(max-width: 1280px) 92vw, 1200px"
+              alt={pick(locale, "Tangkapan layar halaman utama ", "Homepage screenshot of ") + project.name} />
+          </a>
+          <figcaption>
+            {pick(locale, "Halaman publik, diambil 30 Oktober 2026. Konten demo dan klaim pemasaran dalam gambar berasal dari situs tersebut, bukan metrik hasil proyek yang diverifikasi. ", "Public homepage captured on October 30, 2026. Demo content and marketing claims in the image belong to the site; they are not verified project outcome metrics. ")}
+            <a className="text-link" href={project.url} target="_blank" rel="noopener noreferrer">
+              {pick(locale, "Kunjungi website", "Visit website")} {new URL(project.url).hostname}
+            </a>
+          </figcaption>
+        </figure></div>
+      )}
       <section
         className="shell case-summary"
         aria-label={pick(locale, "Ringkasan proyek", "Project summary")}

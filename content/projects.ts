@@ -2,52 +2,6 @@ import { type Locale, pick } from "@/config/site";
 export function projects(locale: Locale) {
   return [
     {
-      slug: "velutara",
-      name: "Velutara",
-      category: pick(
-        locale,
-        "AI & proyek internasional",
-        "AI & international delivery",
-      ),
-      description: pick(
-        locale,
-        "Aplikasi perencanaan perjalanan berbantuan AI, diserahkan melalui kerja sama langsung dengan perusahaan di Singapura.",
-        "AI-assisted travel planning, delivered through a direct business relationship with a Singapore-based company.",
-      ),
-      url: "https://velutara.com",
-      tags: ["AI integration", "Product engineering"],
-      context: pick(
-        locale,
-        "Membantu mengubah ide perjalanan menjadi rencana yang lebih terstruktur melalui aplikasi berbantuan AI.",
-        "An opportunity to turn travel ideas into more structured plans through an AI-assisted application.",
-      ),
-      solution: pick(
-        locale,
-        "Pengembangan aplikasi perencanaan perjalanan dengan integrasi AI dan penyerahan source code secara komersial.",
-        "Development of an AI-assisted travel planning application and commercial delivery of its source code.",
-      ),
-      responsibility: pick(
-        locale,
-        "Pengembangan software dan penyerahan proyek melalui hubungan langsung dengan klien internasional.",
-        "Software development and project handover through a direct international client relationship.",
-      ),
-      approach: pick(
-        locale,
-        "Menghubungkan pengalaman pengguna dengan kemampuan AI dalam satu alur perencanaan. Detail implementasi milik klien tidak dipublikasikan.",
-        "Connecting the user experience with AI capabilities in a planning workflow. Client-owned implementation details are not published.",
-      ),
-      features: pick(
-        locale,
-        "Perencanaan perjalanan berbantuan AI; Alur perencanaan digital; Penyerahan source code komersial",
-        "AI-assisted travel planning; Digital planning workflow; Commercial source-code handover",
-      ).split("; "),
-      outcome: pick(
-        locale,
-        "Source code dijual dan diserahkan kepada perusahaan yang berbasis di Singapura.",
-        "The source code was commercially sold and delivered to a Singapore-based company.",
-      ),
-    },
-    {
       slug: "veritik",
       name: "Veritik",
       category: pick(
@@ -91,6 +45,52 @@ export function projects(locale: Locale) {
         locale,
         "Produk ini menunjukkan kemampuan pengembangan software B2B dan integrasi AI secara mandiri.",
         "The product demonstrates independent B2B software engineering and AI integration.",
+      ),
+    },
+    {
+      slug: "velutara",
+      name: "Velutara",
+      category: pick(
+        locale,
+        "AI & proyek internasional",
+        "AI & international delivery",
+      ),
+      description: pick(
+        locale,
+        "Aplikasi perencanaan perjalanan berbantuan AI, diserahkan melalui kerja sama langsung dengan perusahaan di Singapura.",
+        "AI-assisted travel planning, delivered through a direct business relationship with a Singapore-based company.",
+      ),
+      url: "https://velutara.com",
+      tags: ["AI integration", "Product engineering"],
+      context: pick(
+        locale,
+        "Membantu mengubah ide perjalanan menjadi rencana yang lebih terstruktur melalui aplikasi berbantuan AI.",
+        "An opportunity to turn travel ideas into more structured plans through an AI-assisted application.",
+      ),
+      solution: pick(
+        locale,
+        "Pengembangan aplikasi perencanaan perjalanan dengan integrasi AI dan penyerahan source code secara komersial.",
+        "Development of an AI-assisted travel planning application and commercial delivery of its source code.",
+      ),
+      responsibility: pick(
+        locale,
+        "Pengembangan software dan penyerahan proyek melalui hubungan langsung dengan klien internasional.",
+        "Software development and project handover through a direct international client relationship.",
+      ),
+      approach: pick(
+        locale,
+        "Menghubungkan pengalaman pengguna dengan kemampuan AI dalam satu alur perencanaan. Detail implementasi milik klien tidak dipublikasikan.",
+        "Connecting the user experience with AI capabilities in a planning workflow. Client-owned implementation details are not published.",
+      ),
+      features: pick(
+        locale,
+        "Perencanaan perjalanan berbantuan AI; Alur perencanaan digital; Penyerahan source code komersial",
+        "AI-assisted travel planning; Digital planning workflow; Commercial source-code handover",
+      ).split("; "),
+      outcome: pick(
+        locale,
+        "Source code dijual dan diserahkan kepada perusahaan yang berbasis di Singapura.",
+        "The source code was commercially sold and delivered to a Singapore-based company.",
       ),
     },
     {
